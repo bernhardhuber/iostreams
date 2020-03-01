@@ -22,11 +22,10 @@ import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
 import java.util.function.Function;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
+import java.util.zip.InflaterInputStream;
 
 /**
  *
@@ -34,95 +33,113 @@ import javax.xml.bind.Marshaller;
  */
 public class StreamsBuilder {
 
-    static class OutputStreamBuilder {
+    public static class OutputStreamBuilder {
 
-        List<Function<OutputStream, OutputStream>> l = new ArrayList<>();
+        private final List<Function<OutputStream, OutputStream>> functionList = new ArrayList<>();
         private OutputStream sink;
 
-        OutputStreamBuilder sink(OutputStream os) {
+        public OutputStreamBuilder sink(OutputStream os) {
             this.sink = os;
             return this;
         }
 
-        OutputStreamBuilder b64Encode() {
-            Function<OutputStream, OutputStream> f = (OutputStream os) -> Base64.getEncoder().wrap(os);
-            l.add(f);
+        public OutputStreamBuilder b64Encode() {
+            final Function<OutputStream, OutputStream> f = (OutputStream os) -> Base64.getEncoder().wrap(os);
+            functionList.add(f);
             return this;
         }
 
-        OutputStreamBuilder gzip() {
-            Function<OutputStream, OutputStream> f = (OutputStream os) -> {
+        public OutputStreamBuilder mimeEncode() {
+            final Function<OutputStream, OutputStream> f = (OutputStream os) -> Base64.getMimeEncoder().wrap(os);
+            functionList.add(f);
+            return this;
+        }
+
+        public OutputStreamBuilder gzip() {
+            final Function<OutputStream, OutputStream> f = (OutputStream os) -> {
                 try {
                     return new GZIPOutputStream(os);
                 } catch (IOException ex) {
                     throw new StreamsException(ex);
                 }
             };
-            l.add(f);
+            functionList.add(f);
             return this;
         }
 
-//        public OutputStreamBuilder m(Object o) throws JAXBException {
-//            Class classesToBeBound = o.getClass();
-//            JAXBContext jaxbContext = JAXBContext.newInstance(classesToBeBound);
-//            Function<OutputStream, OutputStream> f = (OutputStream os) -> {
-//                Marshaller m = jaxbContext.createMarshaller();
-//                m.marshal(o, os );
-//            }
-//                    l.add(f);
-//            return this;
-//        }
+        public OutputStreamBuilder deflate() {
+            final Function<OutputStream, OutputStream> f = (OutputStream os) -> {
+                return new DeflaterOutputStream(os);
+            };
+            functionList.add(f);
+            return this;
+        }
 
-        OutputStream build() {
-            OutputStream os = this.sink;
-            OutputStream osl = os;
+        public OutputStream build() {
+            final OutputStream os = this.sink;
+            OutputStream osApplying = os;
 
-            for (int i = 0; i < l.size(); i++) {
-                Function<OutputStream, OutputStream> f = l.get(i);
-                osl = f.apply(osl);
+            for (int i = 0; i < functionList.size(); i++) {
+                Function<OutputStream, OutputStream> f = functionList.get(i);
+                osApplying = f.apply(osApplying);
             }
-            return osl;
+            return osApplying;
         }
     }
 
-    static class InputStreamBuilder {
+    public static class InputStreamBuilder {
 
-        List<Function<InputStream, InputStream>> l = new ArrayList<>();
+        private final List<Function<InputStream, InputStream>> functionList = new ArrayList<>();
         private InputStream source;
 
-        InputStreamBuilder source(InputStream is) {
+        public InputStreamBuilder source(InputStream is) {
             this.source = is;
             return this;
         }
 
-        InputStreamBuilder b64Decode() {
-            Function<InputStream, InputStream> f = (InputStream is)
+        public InputStreamBuilder b64Decode() {
+            final Function<InputStream, InputStream> f = (InputStream is)
                     -> Base64.getDecoder().wrap(is);
-            l.add(f);
+            functionList.add(f);
             return this;
         }
 
-        InputStreamBuilder gunzip() {
-            Function<InputStream, InputStream> f = (InputStream is) -> {
+        public InputStreamBuilder mimeDecode() {
+            final Function<InputStream, InputStream> f = (InputStream is)
+                    -> Base64.getMimeDecoder().wrap(is);
+            functionList.add(f);
+            return this;
+        }
+
+        public InputStreamBuilder gunzip() {
+            final Function<InputStream, InputStream> f = (InputStream is) -> {
                 try {
                     return new GZIPInputStream(is);
                 } catch (IOException ex) {
                     throw new StreamsException(ex);
                 }
             };
-            l.add(f);
+            functionList.add(f);
             return this;
         }
 
-        InputStream build() {
-            InputStream is = this.source;
-            InputStream isl = is;
+        public InputStreamBuilder inflate() {
+            final Function<InputStream, InputStream> f = (InputStream is) -> {
+                return new InflaterInputStream(is);
+            };
+            functionList.add(f);
+            return this;
+        }
 
-            for (int i = 0; i < l.size(); i++) {
-                Function<InputStream, InputStream> f = l.get(i);
-                isl = f.apply(isl);
+        public InputStream build() {
+            final InputStream is = this.source;
+            InputStream isApplying = is;
+
+            for (int i = 0; i < functionList.size(); i++) {
+                Function<InputStream, InputStream> f = functionList.get(i);
+                isApplying = f.apply(isApplying);
             }
-            return isl;
+            return isApplying;
         }
     }
 

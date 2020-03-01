@@ -21,8 +21,10 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
 import java.util.function.Function;
+import java.util.zip.DeflaterOutputStream;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
+import java.util.zip.InflaterInputStream;
 import org.apache.commons.io.IOUtils;
 
 /**
@@ -99,6 +101,39 @@ public class Functions {
                             GZIPInputStream gis = new GZIPInputStream(bais)) {
                         IOUtils.copy(gis, sink);
 
+                    }
+                    sink.flush();
+                    return sink.toByteArray();
+                } catch (IOException ioex) {
+                    throw new StreamsException(ioex);
+                }
+            };
+        }
+    }
+    static class FInFlageDeflate {
+
+        Function<byte[], byte[]> deflateCompress() {
+            return (byte[] source) -> {
+                try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
+                    try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
+                             DeflaterOutputStream gos = new  DeflaterOutputStream(sink, false)) {
+                        IOUtils.copy(bais, gos);
+                    }
+                    sink.flush();
+                    final byte[] bytes = sink.toByteArray();
+                    return bytes;
+                } catch (IOException ioex) {
+                    throw new StreamsException(ioex);
+                }
+            };
+        }
+
+        Function<byte[], byte[]> inflateDecompress() {
+            return (byte[] source) -> {
+                try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
+                    try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
+                             InflaterInputStream gis = new  InflaterInputStream(bais)) {
+                        IOUtils.copy(gis, sink);
                     }
                     sink.flush();
                     return sink.toByteArray();

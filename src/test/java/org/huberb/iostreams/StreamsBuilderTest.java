@@ -33,10 +33,10 @@ import org.junit.Test;
  */
 public class StreamsBuilderTest {
 
-    Logger LOG = Logger.getLogger(StreamsBuilderTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(StreamsBuilderTest.class.getName());
 
     @Test
-    public void test_B64EncGzip_GunzipB64Dec() throws IOException {
+    public void test_String_B64EncGzip_GunzipB64Dec() throws IOException {
         String s = new SampleData().createSmallSample();
         LOG.log(Level.INFO, "input {0}", s);
 
@@ -53,7 +53,7 @@ public class StreamsBuilderTest {
             }
             sink.flush();
         }
-        LOG.log(Level.INFO, "GzipB64Encode {0}", sink.toString("UTF-8"));
+        LOG.log(Level.INFO, "gzipB64Encode {0}", sink.toString("UTF-8"));
         byte[] bytes = sink.toByteArray();
         ByteArrayOutputStream sink2 = new ByteArrayOutputStream();
         {
@@ -67,13 +67,13 @@ public class StreamsBuilderTest {
             }
             sink2.flush();
         }
-        LOG.log(Level.INFO, "B64DecodeGunzip {0}", sink2.toString("UTF-8"));
+        LOG.log(Level.INFO, "b64DecodeGunzip {0}", sink2.toString("UTF-8"));
 
         assertEquals(s, sink2.toString("UTF-8"));
     }
 
     @Test
-    public void testXml() throws IOException {
+    public void test_XmlParent_MimeEncGzip_GunzipB64Dec() throws IOException {
         SampleXmlData.XmlParent xmlParent = new SampleXmlData.XmlParentFactory().createSample(10, "testXml100_");
         LOG.log(Level.INFO, "input {0}", xmlParent);
 
@@ -81,27 +81,27 @@ public class StreamsBuilderTest {
         {
             try (OutputStream os = new StreamsBuilder.OutputStreamBuilder().
                     sink(sink).
-                    b64Encode().
+                    mimeEncode().
                     gzip().
                     build()) {
                 JAXB.marshal(xmlParent, os);
             }
             sink.flush();
         }
-        LOG.log(Level.INFO, "gzipB64Encode {0}", sink.toString("UTF-8"));
+        LOG.log(Level.INFO, "gzipMimeEncode {0}", sink.toString("UTF-8"));
         byte[] bytes = sink.toByteArray();
         SampleXmlData.XmlParent xmlParent2;
         {
             ByteArrayInputStream source = new ByteArrayInputStream(bytes);
             try (InputStream is = new StreamsBuilder.InputStreamBuilder().
                     source(source).
-                    b64Decode().
+                    mimeDecode().
                     gunzip().
                     build()) {
                 xmlParent2 = JAXB.unmarshal(is, SampleXmlData.XmlParent.class);
             }
         }
-        LOG.log(Level.INFO, "DecodeB64Gunzip {0}", xmlParent2);
+        LOG.log(Level.INFO, "decodeMimeGunzip {0}", xmlParent2);
 
         assertEquals(xmlParent.getParentName(), xmlParent2.getParentName());
     }
