@@ -53,7 +53,7 @@ public class Functions {
 
     }
 
-    static class FConvert {
+    static class FConvertStringBytes {
 
         Function<byte[], String> convertToString() {
             return (byte[] b) -> {
@@ -110,7 +110,7 @@ public class Functions {
             };
         }
     }
-    static class FInFlageDeflate {
+    static class FInflateDeflate {
 
         Function<byte[], byte[]> deflateCompress() {
             return (byte[] source) -> {
@@ -120,8 +120,7 @@ public class Functions {
                         IOUtils.copy(bais, gos);
                     }
                     sink.flush();
-                    final byte[] bytes = sink.toByteArray();
-                    return bytes;
+                    return sink.toByteArray();
                 } catch (IOException ioex) {
                     throw new StreamsException(ioex);
                 }

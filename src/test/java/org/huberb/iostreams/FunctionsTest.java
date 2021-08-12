@@ -33,16 +33,16 @@ public class FunctionsTest {
     public void test_B64_Encode_Decode() {
         String abc = new SampleData().createSmallSample();
 
-        String out1 = new Functions.FConvert().convertToBytes().
+        String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().encode()).
-                andThen(new Functions.FConvert().convertToString()).
+                andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(abc);
         assertNotNull(out1);
         LOG.log(Level.INFO, "encode: {0} -> {1}", new Object[]{abc, out1});
 
-        String out2 = new Functions.FConvert().convertToBytes().
+        String out2 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().decode()).
-                andThen(new Functions.FConvert().convertToString()).
+                andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(out1);
         assertNotNull(out2);
         LOG.log(Level.INFO, "decode: {0} -> {1}", new Object[]{abc, out2});
@@ -54,16 +54,16 @@ public class FunctionsTest {
     public void test_B64_MimeEncode_MimeDecode() {
         String abc = new SampleData().createSmallSample();
 
-        String out1 = new Functions.FConvert().convertToBytes().
+        String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().mimeEncode()).
-                andThen(new Functions.FConvert().convertToString()).
+                andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(abc);
         assertNotNull(out1);
         LOG.log(Level.INFO, "mimeEncode: {0} -> {1}", new Object[]{abc, out1});
 
-        String out2 = new Functions.FConvert().convertToBytes().
+        String out2 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().mimeDecode()).
-                andThen(new Functions.FConvert().convertToString()).
+                andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(out1);
         assertNotNull(out2);
         LOG.log(Level.INFO, "mimeDecode: {0} -> {1}", new Object[]{abc, out2});
@@ -75,18 +75,18 @@ public class FunctionsTest {
     public void test_Gzip_B64Enc_B64Dec_Gunzip() {
         String abc = new SampleData().createSmallSample();
 
-        String out1 = new Functions.FConvert().convertToBytes().
+        String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FGzip().gzipCompress()).
                 andThen(new Functions.FBase64().encode()).
-                andThen(new Functions.FConvert().convertToString()).
+                andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(abc);
         assertNotNull(out1);
         LOG.log(Level.INFO, "gzip-encode: {0} -> {1}", new Object[]{abc, out1});
 
-        String out2 = new Functions.FConvert().convertToBytes().
+        String out2 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().decode()).
                 andThen(new Functions.FGzip().gzipDecompress()).
-                andThen(new Functions.FConvert().convertToString()).
+                andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(out1);
         assertNotNull(out2);
         LOG.log(Level.INFO, "decode-gunzip: {0} -> {1}", new Object[]{abc, out2});
