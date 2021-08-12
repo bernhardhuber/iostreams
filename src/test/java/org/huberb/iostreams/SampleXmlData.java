@@ -22,6 +22,7 @@ import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
 /**
+ * Xml sample data factory.
  *
  * @author berni3
  */

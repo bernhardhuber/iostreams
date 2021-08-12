@@ -18,25 +18,38 @@ package org.huberb.iostreams;
 import org.apache.commons.lang3.StringUtils;
 
 /**
+ * A a very simple sample data generator.
  *
  * @author berni3
  */
 public class SampleData {
 
+    /**
+     * Create a small sample string.
+     *
+     * @return
+     */
     String createSmallSample() {
         return StringUtils.repeat("A", 10);
     }
 
+    /**
+     * Create a sample string of length size, repeating parameter data.
+     *
+     * @param data
+     * @param size
+     * @return
+     */
     String createSample(String data, int size) {
         int r = size / data.length();
         String result;
         if (r > 1) {
-            result = StringUtils.repeat(data, r+1);
+            result = StringUtils.repeat(data, r + 1);
         } else {
             result = data;
         }
         if (result.length() > size) {
-            result = StringUtils.substring(result, 0, size );
+            result = StringUtils.substring(result, 0, size);
         }
         return result;
     }
