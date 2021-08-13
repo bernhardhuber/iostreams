@@ -32,79 +32,79 @@ public class FunctionsTest {
 
     @Test
     public void test_B64_Encode_Decode() {
-        String abc = new SampleData().createSmallSample();
+        final String s = new SampleData().createSmallSample();
 
-        String out1 = new Functions.FConvertStringBytes().convertToBytes().
+        final String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().encode()).
                 andThen(new Functions.FConvertStringBytes().convertToString()).
-                apply(abc);
+                apply(s);
         assertNotNull(out1);
-        LOG.log(Level.INFO, "encode: {0} -> {1}", new Object[]{abc, out1});
+        LOG.log(Level.INFO, "encode: {0} -> {1}", new Object[]{s, out1});
 
-        String out2 = new Functions.FConvertStringBytes().convertToBytes().
+        final String out2 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().decode()).
                 andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(out1);
         assertNotNull(out2);
-        LOG.log(Level.INFO, "decode: {0} -> {1}", new Object[]{abc, out2});
+        LOG.log(Level.INFO, "decode: {0} -> {1}", new Object[]{s, out2});
 
-        assertEquals(abc, out2);
+        assertEquals(s, out2);
     }
 
     @Test
     public void test_B64_MimeEncode_MimeDecode() {
-        String abc = new SampleData().createSmallSample();
+        final String s = new SampleData().createSmallSample();
 
-        String out1 = new Functions.FConvertStringBytes().convertToBytes().
+        final String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().mimeEncode()).
                 andThen(new Functions.FConvertStringBytes().convertToString()).
-                apply(abc);
+                apply(s);
         assertNotNull(out1);
-        LOG.log(Level.INFO, "mimeEncode: {0} -> {1}", new Object[]{abc, out1});
+        LOG.log(Level.INFO, "mimeEncode: {0} -> {1}", new Object[]{s, out1});
 
-        String out2 = new Functions.FConvertStringBytes().convertToBytes().
+        final String out2 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().mimeDecode()).
                 andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(out1);
         assertNotNull(out2);
-        LOG.log(Level.INFO, "mimeDecode: {0} -> {1}", new Object[]{abc, out2});
+        LOG.log(Level.INFO, "mimeDecode: {0} -> {1}", new Object[]{s, out2});
 
-        assertEquals(abc, out2);
+        assertEquals(s, out2);
     }
 
     @Test
     public void test_Gzip_B64Enc_B64Dec_Gunzip() {
-        String abc = new SampleData().createSmallSample();
+        final String s = new SampleData().createSmallSample();
 
-        String out1 = new Functions.FConvertStringBytes().convertToBytes().
+        final String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FGzip().gzipCompress()).
                 andThen(new Functions.FBase64().encode()).
                 andThen(new Functions.FConvertStringBytes().convertToString()).
-                apply(abc);
+                apply(s);
         assertNotNull(out1);
-        LOG.log(Level.INFO, "gzip-encode: {0} -> {1}", new Object[]{abc, out1});
+        LOG.log(Level.INFO, "gzip-encode: {0} -> {1}", new Object[]{s, out1});
 
-        String out2 = new Functions.FConvertStringBytes().convertToBytes().
+        final String out2 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().decode()).
                 andThen(new Functions.FGzip().gzipDecompress()).
                 andThen(new Functions.FConvertStringBytes().convertToString()).
                 apply(out1);
         assertNotNull(out2);
-        LOG.log(Level.INFO, "decode-gunzip: {0} -> {1}", new Object[]{abc, out2});
+        LOG.log(Level.INFO, "decode-gunzip: {0} -> {1}", new Object[]{s, out2});
 
-        assertEquals(abc, out2);
+        assertEquals(s, out2);
     }
 
     @Test
     public void test_Compress_Decompress() throws UnsupportedEncodingException {
-        String abc = new SampleData().createSmallSample();
+        final String s = new SampleData().createSmallSample();
 
-        byte[] b1 = new Functions.FGzip().gzipCompress().apply(abc.getBytes("UTF-8"));
-        byte[] b2 = new Functions.FGzip().gzipDecompress().apply(b1);
-        String abc2 = new String(b2, "UTF-8");
+        final byte[] b1 = new Functions.FGzip().gzipCompress().apply(s.getBytes("UTF-8"));
+        final byte[] b2 = new Functions.FGzip().gzipDecompress().apply(b1);
+        final String abc2 = new String(b2, "UTF-8");
 
         assertNotNull(abc2);
-        LOG.log(Level.INFO, "gzip-gunzip: {0} -> {1}", new Object[]{abc, abc2});
-        assertEquals(abc, abc2);
+        LOG.log(Level.INFO, "gzip-gunzip: {0} -> {1}", new Object[]{s, abc2});
+        assertEquals(s, abc2);
     }
 }

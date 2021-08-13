@@ -60,7 +60,7 @@ public class StreamsBuilder {
                 try {
                     return new GZIPOutputStream(os);
                 } catch (IOException ex) {
-                    throw new StreamsException(ex);
+                    throw new StreamsException("gzip", ex);
                 }
             };
             functionList.add(f);
@@ -76,14 +76,14 @@ public class StreamsBuilder {
         }
 
         public OutputStream build() {
-            final OutputStream os = this.sink;
-            OutputStream osApplying = os;
+            final OutputStream outputStream = this.sink;
+            OutputStream outputStreamApplying = outputStream;
 
             for (int i = 0; i < functionList.size(); i++) {
                 Function<OutputStream, OutputStream> f = functionList.get(i);
-                osApplying = f.apply(osApplying);
+                outputStreamApplying = f.apply(outputStreamApplying);
             }
-            return osApplying;
+            return outputStreamApplying;
         }
     }
 
@@ -116,7 +116,7 @@ public class StreamsBuilder {
                 try {
                     return new GZIPInputStream(is);
                 } catch (IOException ex) {
-                    throw new StreamsException(ex);
+                    throw new StreamsException("gunzip", ex);
                 }
             };
             functionList.add(f);
@@ -132,14 +132,14 @@ public class StreamsBuilder {
         }
 
         public InputStream build() {
-            final InputStream is = this.source;
-            InputStream isApplying = is;
+            final InputStream inputStreamSource = this.source;
+            InputStream inputStreamApplying = inputStreamSource;
 
             for (int i = 0; i < functionList.size(); i++) {
-                Function<InputStream, InputStream> f = functionList.get(i);
-                isApplying = f.apply(isApplying);
+                final Function<InputStream, InputStream> f = functionList.get(i);
+                inputStreamApplying = f.apply(inputStreamApplying);
             }
-            return isApplying;
+            return inputStreamApplying;
         }
     }
 

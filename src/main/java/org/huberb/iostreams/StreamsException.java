@@ -15,25 +15,25 @@
  */
 package org.huberb.iostreams;
 
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
 /**
+ * Wrapping {@link RuntimeException} for thrown standard exceptions.
+ * <p>
+ * Instances of this exception are used in functions, and methods when throwing
+ * standard-exceptions is not allowed.
  *
  * @author berni3
  */
 public class StreamsException extends RuntimeException {
 
-    public StreamsException() {
-    }
-
-    public StreamsException(String message) {
-        super(message);
-    }
-
-    public StreamsException(String message, Throwable cause) {
+    public StreamsException(String message, IOException cause) {
         super(message, cause);
     }
 
-    public StreamsException(Throwable cause) {
-        super(cause);
+    public StreamsException(String message, UnsupportedEncodingException cause) {
+        super(message, cause);
     }
 
 }

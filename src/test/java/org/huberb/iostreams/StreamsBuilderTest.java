@@ -37,63 +37,63 @@ public class StreamsBuilderTest {
 
     @Test
     public void test_String_B64EncGzip_GunzipB64Dec() throws IOException {
-        String s = new SampleData().createSmallSample();
+        final String s = new SampleData().createSmallSample();
         LOG.log(Level.INFO, "input {0}", s);
 
-        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baosSinkEncode = new ByteArrayOutputStream();
         {
 
-            try (OutputStream os = new StreamsBuilder.OutputStreamBuilder().
-                    sink(sink).
+            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().
+                    sink(baosSinkEncode).
                     b64Encode().
                     gzip().
                     build();
-                    InputStream is = IOUtils.toInputStream(s, "UTF-8")) {
+                    final InputStream is = IOUtils.toInputStream(s, "UTF-8")) {
                 IOUtils.copy(is, os);
             }
-            sink.flush();
+            baosSinkEncode.flush();
         }
-        LOG.log(Level.INFO, "gzipB64Encode {0}", sink.toString("UTF-8"));
-        byte[] bytes = sink.toByteArray();
-        ByteArrayOutputStream sink2 = new ByteArrayOutputStream();
+        LOG.log(Level.INFO, "gzipB64Encode {0}", baosSinkEncode.toString("UTF-8"));
+        final byte[] bytesOfBaosSinkEncoded = baosSinkEncode.toByteArray();
+        final ByteArrayOutputStream baosSinkDecode = new ByteArrayOutputStream();
         {
-            try (ByteArrayInputStream source = new ByteArrayInputStream(bytes);
-                    InputStream is = new StreamsBuilder.InputStreamBuilder().
+            try (final ByteArrayInputStream source = new ByteArrayInputStream(bytesOfBaosSinkEncoded);
+                    final InputStream is = new StreamsBuilder.InputStreamBuilder().
                             source(source).
                             b64Decode().
                             gunzip().
                             build()) {
-                IOUtils.copy(is, sink2);
+                IOUtils.copy(is, baosSinkDecode);
             }
-            sink2.flush();
+            baosSinkDecode.flush();
         }
-        LOG.log(Level.INFO, "b64DecodeGunzip {0}", sink2.toString("UTF-8"));
+        LOG.log(Level.INFO, "b64DecodeGunzip {0}", baosSinkDecode.toString("UTF-8"));
 
-        assertEquals(s, sink2.toString("UTF-8"));
+        assertEquals(s, baosSinkDecode.toString("UTF-8"));
     }
 
     @Test
     public void test_XmlParent_MimeEncGzip_GunzipB64Dec() throws IOException {
-        SampleXmlData.XmlParent xmlParent = new SampleXmlData.XmlParentFactory().createSample(10, "testXml100_");
+        final SampleXmlData.XmlParent xmlParent = new SampleXmlData.XmlParentFactory().createSample(10, "testXml100_");
         LOG.log(Level.INFO, "input {0}", xmlParent);
 
-        ByteArrayOutputStream sink = new ByteArrayOutputStream();
+        final ByteArrayOutputStream baosSinkEncode = new ByteArrayOutputStream();
         {
-            try (OutputStream os = new StreamsBuilder.OutputStreamBuilder().
-                    sink(sink).
+            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().
+                    sink(baosSinkEncode).
                     mimeEncode().
                     gzip().
                     build()) {
                 JAXB.marshal(xmlParent, os);
             }
-            sink.flush();
+            baosSinkEncode.flush();
         }
-        LOG.log(Level.INFO, "gzipMimeEncode {0}", sink.toString("UTF-8"));
-        byte[] bytes = sink.toByteArray();
-        SampleXmlData.XmlParent xmlParent2;
+        LOG.log(Level.INFO, "gzipMimeEncode {0}", baosSinkEncode.toString("UTF-8"));
+        byte[] bytes = baosSinkEncode.toByteArray();
+        final SampleXmlData.XmlParent xmlParent2;
         {
-            ByteArrayInputStream source = new ByteArrayInputStream(bytes);
-            try (InputStream is = new StreamsBuilder.InputStreamBuilder().
+            final ByteArrayInputStream source = new ByteArrayInputStream(bytes);
+            try (final InputStream is = new StreamsBuilder.InputStreamBuilder().
                     source(source).
                     mimeDecode().
                     gunzip().

@@ -71,6 +71,7 @@ public class B64GzipStreamTest {
             }
         }
     }
+
     @ParameterizedTest
     @MethodSource(value = "createSampleDataStream")
     public void test_Gzip_Gunzip(String s) throws IOException {
@@ -111,6 +112,7 @@ public class B64GzipStreamTest {
         final SampleData sampleData = new SampleData();
         return Arrays.asList(
                 "A", "abc",
+                sampleData.createSmallSample(),
                 sampleData.createSample("1234567890!\"§$%&/()=?", 64),
                 sampleData.createSample("Hello", 128),
                 sampleData.createSample("Lorem ipsum", 512)

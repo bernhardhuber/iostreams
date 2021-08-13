@@ -33,6 +33,9 @@ import org.apache.commons.io.IOUtils;
  */
 public class Functions {
 
+    /**
+     * Functions wrapper of base64, and Mime encoder, and decoder.
+     */
     static class FBase64 {
 
         Function<byte[], byte[]> encode() {
@@ -53,6 +56,9 @@ public class Functions {
 
     }
 
+    /**
+     * Functions wrappers converting a string to byte[] and vice versa.
+     */
     static class FConvertStringBytes {
 
         Function<byte[], String> convertToString() {
@@ -60,7 +66,7 @@ public class Functions {
                 try {
                     return new String(b, "UTF-8");
                 } catch (UnsupportedEncodingException ex) {
-                    throw new StreamsException(ex);
+                    throw new StreamsException("convertToString", ex);
                 }
             };
         }
@@ -70,12 +76,15 @@ public class Functions {
                 try {
                     return s.getBytes("UTF-8");
                 } catch (UnsupportedEncodingException ex) {
-                    throw new StreamsException(ex);
+                    throw new StreamsException("convertToBytes", ex);
                 }
             };
         }
     }
 
+    /**
+     * Functions wrapper to compress, and decompress using gzip.
+     */
     static class FGzip {
 
         Function<byte[], byte[]> gzipCompress() {
@@ -89,7 +98,7 @@ public class Functions {
                     final byte[] bytes = sink.toByteArray();
                     return bytes;
                 } catch (IOException ioex) {
-                    throw new StreamsException(ioex);
+                    throw new StreamsException("gzipCompress", ioex);
                 }
             };
         }
@@ -105,24 +114,29 @@ public class Functions {
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException(ioex);
+                    throw new StreamsException("gzipDecompress", ioex);
                 }
             };
         }
     }
+
+    /**
+     * Function wrapper to compress, and decompress using inflate, and deflate
+     * algorithm.
+     */
     static class FInflateDeflate {
 
         Function<byte[], byte[]> deflateCompress() {
             return (byte[] source) -> {
                 try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
                     try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
-                             DeflaterOutputStream gos = new  DeflaterOutputStream(sink, false)) {
+                            DeflaterOutputStream gos = new DeflaterOutputStream(sink, false)) {
                         IOUtils.copy(bais, gos);
                     }
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException(ioex);
+                    throw new StreamsException("deflateCompress", ioex);
                 }
             };
         }
@@ -131,13 +145,13 @@ public class Functions {
             return (byte[] source) -> {
                 try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
                     try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
-                             InflaterInputStream gis = new  InflaterInputStream(bais)) {
+                            InflaterInputStream gis = new InflaterInputStream(bais)) {
                         IOUtils.copy(gis, sink);
                     }
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException(ioex);
+                    throw new StreamsException("inflateDecompress", ioex);
                 }
             };
         }
