@@ -16,15 +16,21 @@ import org.huberb.iostreams.StreamsBuilder;
 import picocli.CommandLine;
 
 /**
+ * Command line application running base64-encoder, base64-decoder,
+ * mime-encoder, mime-decoder, gzip, gunzip, deflate, or inflate.
  *
  * @author pi
  */
-@CommandLine.Command(name = "MainTools",
+@CommandLine.Command(name = "Main",
         mixinStandardHelpOptions = true,
         showAtFileInUsageHelp = true,
         showDefaultValues = true,
-        version = "MainTools 0.1-SNAPSHOT",
-        description = "Run iostream tool%n"
+        version = "Main 0.1-SNAPSHOT",
+        description = "Run iostream tool - %n"
+        + "base64-encoder, base64-decoder, "
+        + " mime-encoder, mime-decoder, "
+        + "gzip, gunzip, "
+        + "deflate, or inflate%n"
         + ""
 )
 public class Main implements Callable<Integer> {
@@ -91,6 +97,7 @@ public class Main implements Callable<Integer> {
             } else if (exclusive.stdin) {
                 result = new IgnoreCloseInputStream(System.in);
             } else {
+                // FIXME throw exception, or use Optional
                 return null;
             }
             return result;
@@ -138,7 +145,5 @@ public class Main implements Callable<Integer> {
 
         }
     }
-
-
 
 }
