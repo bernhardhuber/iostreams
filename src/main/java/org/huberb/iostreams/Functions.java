@@ -28,6 +28,7 @@ import java.util.zip.InflaterInputStream;
 import org.apache.commons.io.IOUtils;
 
 /**
+ * Wrapper of converting, encoding, and compressing functions.
  *
  * @author berni3
  */
@@ -36,21 +37,49 @@ public class Functions {
     /**
      * Functions wrapper of base64, and Mime encoder, and decoder.
      */
-    static class FBase64 {
+    public static class FBase64 {
 
-        Function<byte[], byte[]> encode() {
+        /**
+         * Creates a function to encode a byte array using type base64 encoding
+         * scheme.
+         *
+         * @return
+         * @see Base64
+         */
+        public Function<byte[], byte[]> encode() {
             return (byte[] src) -> Base64.getEncoder().encode(src);
         }
 
-        Function<byte[], byte[]> mimeEncode() {
+        /**
+         * Creates a function to encode a byte array using type base64 encoding
+         * scheme.
+         *
+         * @return
+         * @see Base64
+         */
+        public Function<byte[], byte[]> mimeEncode() {
             return (byte[] src) -> Base64.getMimeEncoder().encode(src);
         }
 
-        Function<byte[], byte[]> decode() {
+        /**
+         * Creates a function to decode a byte array using type base64 decoding
+         * scheme.
+         *
+         * @return
+         * @see Base64
+         */
+        public Function<byte[], byte[]> decode() {
             return (byte[] src) -> Base64.getDecoder().decode(src);
         }
 
-        Function<byte[], byte[]> mimeDecode() {
+        /**
+         * Creates a function to encode a byte array using type base64 decoding
+         * scheme.
+         *
+         * @return
+         * @see Base64
+         */
+        public Function<byte[], byte[]> mimeDecode() {
             return (byte[] src) -> Base64.getMimeDecoder().decode(src);
         }
 
@@ -59,9 +88,15 @@ public class Functions {
     /**
      * Functions wrappers converting a string to byte[] and vice versa.
      */
-    static class FConvertStringBytes {
+    public static class FConvertStringBytes {
 
-        Function<byte[], String> convertToString() {
+        /**
+         * Creates a function to convert a byte array to a string using UTF-8.
+         *
+         * @return
+         * @see java.lang.String#String(byte[], java.nio.charset.Charset)
+         */
+        public Function<byte[], String> convertToString() {
             return (byte[] b) -> {
                 try {
                     return new String(b, "UTF-8");
@@ -71,7 +106,13 @@ public class Functions {
             };
         }
 
-        Function<String, byte[]> convertToBytes() {
+        /**
+         * Creates a function to convert a string to a byte array using UTF-8.
+         *
+         * @return
+         * @see java.lang.String#getBytes(java.nio.charset.Charset)
+         */
+        public Function<String, byte[]> convertToBytes() {
             return (String s) -> {
                 try {
                     return s.getBytes("UTF-8");
@@ -85,9 +126,15 @@ public class Functions {
     /**
      * Functions wrapper to compress, and decompress using gzip.
      */
-    static class FGzip {
+    public static class FGzip {
 
-        Function<byte[], byte[]> gzipCompress() {
+        /**
+         * Creates a function for g-zipping a byte array.
+         *
+         * @return
+         * @see GZIPOutputStream
+         */
+        public Function<byte[], byte[]> gzipCompress() {
             return (byte[] source) -> {
                 try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
                     try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
@@ -95,15 +142,20 @@ public class Functions {
                         IOUtils.copy(bais, gos);
                     }
                     sink.flush();
-                    final byte[] bytes = sink.toByteArray();
-                    return bytes;
+                    return sink.toByteArray();
                 } catch (IOException ioex) {
                     throw new StreamsException("gzipCompress", ioex);
                 }
             };
         }
 
-        Function<byte[], byte[]> gzipDecompress() {
+        /**
+         * Creates a function for gun-zipping a byte array.
+         *
+         * @return
+         * @see GZIPInputStream
+         */
+        public Function<byte[], byte[]> gzipDecompress() {
             return (byte[] source) -> {
                 try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
                     try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
@@ -124,9 +176,15 @@ public class Functions {
      * Function wrapper to compress, and decompress using inflate, and deflate
      * algorithm.
      */
-    static class FInflateDeflate {
+    public static class FInflateDeflate {
 
-        Function<byte[], byte[]> deflateCompress() {
+        /**
+         * Creates function to deflate a byte array.
+         *
+         * @return
+         * @see DeflaterOutputStream
+         */
+        public Function<byte[], byte[]> deflateCompress() {
             return (byte[] source) -> {
                 try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
                     try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
@@ -141,7 +199,13 @@ public class Functions {
             };
         }
 
-        Function<byte[], byte[]> inflateDecompress() {
+        /**
+         * Creates a function to inflate a byte array.
+         *
+         * @return
+         * @see InflaterInputStream
+         */
+        public Function<byte[], byte[]> inflateDecompress() {
             return (byte[] source) -> {
                 try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
                     try (ByteArrayInputStream bais = new ByteArrayInputStream(source);

@@ -30,6 +30,7 @@ import java.util.zip.GZIPOutputStream;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.io.output.ChunkedOutputStream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 
@@ -39,7 +40,13 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 public class B64GzipStreamTest {
 
-    Logger LOG = Logger.getLogger(B64GzipStreamTest.class.getName());
+     private static final Logger LOG = Logger.getLogger(B64GzipStreamTest.class.getName());
+
+    @BeforeAll
+    public static void beforeAll() {
+        LOG.setLevel(Level.OFF);
+    }
+
 
     @ParameterizedTest
     @MethodSource(value = "createSampleDataStream")

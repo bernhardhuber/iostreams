@@ -16,11 +16,15 @@ package org.huberb.iostreams;
  * limitations under the License.
  */
 import java.io.UnsupportedEncodingException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.MethodSource;
 
 /**
  *
@@ -28,11 +32,16 @@ import org.junit.jupiter.api.Test;
  */
 public class FunctionsTest {
 
-    Logger LOG = Logger.getLogger(FunctionsTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(FunctionsTest.class.getName());
 
-    @Test
-    public void test_B64_Encode_Decode() {
-        final String s = new SampleData().createSmallSample();
+    @BeforeAll
+    public static void beforeAll() {
+        LOG.setLevel(Level.OFF);
+    }
+
+    @ParameterizedTest
+    @MethodSource(value = "createSampleDataStream")
+    public void test_B64_Encode_Decode(String s) {
 
         final String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().encode()).
@@ -51,9 +60,9 @@ public class FunctionsTest {
         assertEquals(s, out2);
     }
 
-    @Test
-    public void test_B64_MimeEncode_MimeDecode() {
-        final String s = new SampleData().createSmallSample();
+    @ParameterizedTest
+    @MethodSource(value = "createSampleDataStream")
+    public void test_B64_MimeEncode_MimeDecode(String s) {
 
         final String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FBase64().mimeEncode()).
@@ -72,9 +81,9 @@ public class FunctionsTest {
         assertEquals(s, out2);
     }
 
-    @Test
-    public void test_Gzip_B64Enc_B64Dec_Gunzip() {
-        final String s = new SampleData().createSmallSample();
+    @ParameterizedTest
+    @MethodSource(value = "createSampleDataStream")
+    public void test_Gzip_B64Enc_B64Dec_Gunzip(String s) {
 
         final String out1 = new Functions.FConvertStringBytes().convertToBytes().
                 andThen(new Functions.FGzip().gzipCompress()).
@@ -95,9 +104,9 @@ public class FunctionsTest {
         assertEquals(s, out2);
     }
 
-    @Test
-    public void test_Compress_Decompress() throws UnsupportedEncodingException {
-        final String s = new SampleData().createSmallSample();
+    @ParameterizedTest
+    @MethodSource(value = "createSampleDataStream")
+    public void test_Compress_Decompress(String s) throws UnsupportedEncodingException {
 
         final byte[] b1 = new Functions.FGzip().gzipCompress().apply(s.getBytes("UTF-8"));
         final byte[] b2 = new Functions.FGzip().gzipDecompress().apply(b1);
@@ -106,5 +115,21 @@ public class FunctionsTest {
         assertNotNull(abc2);
         LOG.log(Level.INFO, "gzip-gunzip: {0} -> {1}", new Object[]{s, abc2});
         assertEquals(s, abc2);
+    }
+
+    /**
+     * Create sample data stream.
+     *
+     * @return
+     */
+    static Stream<String> createSampleDataStream() {
+        final SampleData sampleData = new SampleData();
+        return Arrays.asList(
+                "A", "abc",
+                sampleData.createSmallSample(),
+                sampleData.createSample("1234567890!\"§$%&/()=?", 64),
+                sampleData.createSample("Hello", 128),
+                sampleData.createSample("Lorem ipsum", 512)
+        ).stream();
     }
 }
