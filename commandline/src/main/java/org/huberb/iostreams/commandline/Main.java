@@ -5,8 +5,6 @@
  */
 package org.huberb.iostreams.commandline;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -29,41 +27,82 @@ import picocli.CommandLine;
         description = "Run iostream tool%n"
         + ""
 )
-
 public class Main implements Callable<Integer> {
 
-    @CommandLine.Option(names = {"--from-file"},
-            paramLabel = "FROM_FILE",
-            description = "read from file name")
-    private File fromFile;
+    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    private FromFileOrStdinExclusive exclusive;
+
+    // make --form-file, and --stdin mutual exclusive
+    static class FromFileOrStdinExclusive {
+
+        @CommandLine.Option(names = {"--from-file"},
+                paramLabel = "FROM_FILE",
+                description = "read from file name")
+        File fromFile;
+        @CommandLine.Option(names = {"--stdin"},
+                required = false,
+                description = "read from stdin")
+        boolean stdin;
+    }
+
     @CommandLine.Option(names = {"--mode"},
             required = true,
             paramLabel = "MODE",
             description = "mode : c(ompress) | d(ecompress)")
     private String mode;
 
+    /*
+        mode compress:    deflate, gzip, b64enc, mimeenc
+        mode decompress:  inflate, gunzip, b64dec, mimedec
+     */
     public static void main(String[] args) {
         final int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
-
     }
 
     @Override
     public Integer call() throws Exception {
-        XFactory xFactory = new XFactory();
+        // create output stream
+        final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(exclusive);
+        final InputStream is = inputStreamFromExclusiveFactory.create();
+
+        // select processing mode, and process
+        final Processor xFactory = new Processor();
         if ("c".equals(this.mode)) {
-            xFactory.processGzipB64(this.fromFile);
+            xFactory.processGzipB64(is);
         } else if ("d".equals(this.mode)) {
-            xFactory.processB64Gunzip(this.fromFile);
+            xFactory.processB64Gunzip(is);
         }
         return 0;
     }
 
-    static class XFactory {
+    static class InputStreamFromExclusiveFactory {
 
-        void processGzipB64(final File inputFile) throws IOException {
+        private final FromFileOrStdinExclusive exclusive;
+
+        public InputStreamFromExclusiveFactory(FromFileOrStdinExclusive exclusive) {
+            this.exclusive = exclusive;
+        }
+
+        InputStream create() throws IOException {
+            final InputStream result;
+            if (exclusive.fromFile != null) {
+                result = FileUtils.openInputStream(exclusive.fromFile);
+            } else if (exclusive.stdin) {
+                result = new IgnoreCloseInputStream(System.in);
+            } else {
+                return null;
+            }
+            return result;
+        }
+    }
+
+    static class Processor {
+
+        void processGzipB64(InputStream xis) throws IOException {
             // encode AAA -> b64(gzip(AAA)) 
-            final OutputStream baosSinkEncode = System.out;
+
+            final OutputStream baosSinkEncode = new IgnoreCloseOutputStream(System.out);
             {
 
                 // AAA -> gzip -> b64encode -> b64gzipAAA
@@ -72,7 +111,7 @@ public class Main implements Callable<Integer> {
                         b64Encode().
                         gzip().
                         build();
-                        final InputStream is = FileUtils.openInputStream(inputFile)) {
+                        final InputStream is = xis) {
 
                     IOUtils.copy(is, os);
                 }
@@ -80,13 +119,13 @@ public class Main implements Callable<Integer> {
             }
         }
 
-        void processB64Gunzip(final File inputFile) throws IOException {
+        void processB64Gunzip(final InputStream xis) throws IOException {
             // decode b64(gzip(AAA)) -> AAA
 
-            final OutputStream baosSinkDecode = System.out;
+            final OutputStream baosSinkDecode = new IgnoreCloseOutputStream(System.out);
             {
                 // b64gzipAAA -> b64decode -> gunzip -> AAA
-                try (final InputStream source = FileUtils.openInputStream(inputFile);
+                try (final InputStream source = xis;
                         final InputStream is = new StreamsBuilder.InputStreamBuilder().
                                 source(source).
                                 b64Decode().
@@ -99,4 +138,7 @@ public class Main implements Callable<Integer> {
 
         }
     }
+
+
+
 }
