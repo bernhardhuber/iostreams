@@ -53,12 +53,12 @@ public class Main implements Callable<Integer> {
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
     private FromFileOrStdinExclusive fromFileOrStdinExclusive;
 
-    // TODO remove mode, use modesExclusive
-    @CommandLine.Option(names = {"--mode"},
-            required = true,
-            paramLabel = "MODE",
-            description = "mode : c(ompress) | d(ecompress)")
-    private String mode;
+//    // TODO remove mode, use modesExclusive
+//    @CommandLine.Option(names = {"--mode"},
+//            required = true,
+//            paramLabel = "MODE",
+//            description = "mode : c(ompress) | d(ecompress)")
+//    private String mode;
 
     /*
         mode compress:    deflate, gzip, b64enc, mimeenc
@@ -75,7 +75,41 @@ public class Main implements Callable<Integer> {
                 paramLabel = "DECOMPRESS",
                 description = "decompress input")
         String decompressModes;
+
+        enum Mode {
+            unknown, compress, decompress;
+        }
+
+        Mode calcMode() {
+            final Mode mode;
+            if (this.compressModes == null && this.decompressModes == null) {
+                mode = Mode.unknown;
+            } else if (this.compressModes != null && this.decompressModes == null) {
+                mode = Mode.compress;
+            } else if (this.compressModes == null && this.decompressModes != null) {
+                mode = Mode.decompress;
+            } else if (this.compressModes != null && this.decompressModes != null) {
+                mode = Mode.unknown;
+            } else {
+                mode = Mode.unknown;
+            }
+            return mode;
+        }
+
+        List<Modecompress> calcModecompress() {
+            final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
+            final List<Modecompress> result = processingModesCompress.convertStringToModecompressList(this.compressModes);
+            return result;
+        }
+
+        List<Modedecompress> calcModeDecompress() {
+            final ProcessingModesDecompress processingModesCompress = new ProcessingModesDecompress();
+            final List<Modedecompress> result = processingModesCompress.convertStringToModedecompressList(this.compressModes);
+            return result;
+        }
+
     }
+
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
     private ModesExclusive modesExclusive;
 
@@ -91,21 +125,22 @@ public class Main implements Callable<Integer> {
         final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(fromFileOrStdinExclusive);
         final Optional<InputStream> optionalInputStream = inputStreamFromExclusiveFactory.create();
         if (optionalInputStream.isPresent()) {
-            InputStream is = optionalInputStream.get();
-            if ("c".equals(this.mode)) {
+            final InputStream is = optionalInputStream.get();
+            final ModesExclusive.Mode mode = this.modesExclusive.calcMode();
+            if (mode == ModesExclusive.Mode.compress) {
                 final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
-                final List<Modecompress> modes = Arrays.asList(Modecompress.b64enc, Modecompress.gzip);
+                final List<Modecompress> defaultProcessingSteps = Arrays.asList(Modecompress.b64enc, Modecompress.gzip);
                 final OutputStream os = new IgnoreCloseOutputStream(System.out);
-                processingModesCompress.xxxcompress(modes, is, os);
+                processingModesCompress.xxxcompress(defaultProcessingSteps, is, os);
                 result = 0;
-            } else if ("d".equals(this.mode)) {
+            } else if (mode == ModesExclusive.Mode.decompress) {
                 final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
-                final List<Modedecompress> modes = Arrays.asList(Modedecompress.b64dec, Modedecompress.gunzip);
+                final List<Modedecompress> defaultProcessModes = Arrays.asList(Modedecompress.b64dec, Modedecompress.gunzip);
                 final OutputStream os = new IgnoreCloseOutputStream(System.out);
-                processingModesDecompress.xxxdecompress(modes, is, os);
+                processingModesDecompress.xxxdecompress(defaultProcessModes, is, os);
                 result = 0;
             } else {
-                logErrorMessage("Unknown processing-mode %s%n", this.mode);
+                logErrorMessage("Unknown processing-mode %s%n", this.modesExclusive);
                 result = 1;
             }
         } else {
