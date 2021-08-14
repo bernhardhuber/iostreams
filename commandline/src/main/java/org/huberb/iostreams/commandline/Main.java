@@ -9,16 +9,11 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.huberb.iostreams.StreamsBuilder;
-import org.huberb.iostreams.StreamsBuilder.InputStreamBuilder;
-import org.huberb.iostreams.StreamsBuilder.OutputStreamBuilder;
 import picocli.CommandLine;
 
 /**
