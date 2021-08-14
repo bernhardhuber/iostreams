@@ -53,7 +53,8 @@ class ProcessingModes {
                     outputStreamBuilder.mimeEncode();
                 }
             }
-            try (final OutputStream os = outputStreamBuilder.build(); final InputStream is = xis) {
+            try (final OutputStream os = outputStreamBuilder.build();
+                    final InputStream is = xis) {
                 IOUtils.copy(is, os);
             }
         }
@@ -92,7 +93,8 @@ class ProcessingModes {
             }
             //final OutputStream baosSinkDecode = new IgnoreCloseOutputStream(System.out);
             // b64gzipAAA -> b64decode -> gunzip -> AAA
-            try (final OutputStream baosSinkDecode = xos; final InputStream is = inputStreamBuilder.build()) {
+            try (final OutputStream baosSinkDecode = xos;
+                    final InputStream is = inputStreamBuilder.build()) {
                 IOUtils.copy(is, baosSinkDecode);
             }
         }

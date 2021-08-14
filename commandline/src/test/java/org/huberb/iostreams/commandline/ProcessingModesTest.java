@@ -39,7 +39,7 @@ public class ProcessingModesTest {
     }
 
     /**
-     * Test of xxxcompress method, of class XXX.
+     * Test of xxxcompress method, of class ProcessingModesCompress.
      *
      * @throws java.io.IOException
      */
@@ -67,7 +67,7 @@ public class ProcessingModesTest {
     }
 
     /**
-     * Test of xxxdecompress method, of class XXX.
+     * Test of xxxdecompress method, of class ProcessingModesDecompress.
      *
      * @throws java.io.IOException
      */
