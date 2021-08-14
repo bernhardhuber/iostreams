@@ -9,11 +9,16 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.huberb.iostreams.StreamsBuilder;
+import org.huberb.iostreams.StreamsBuilder.InputStreamBuilder;
+import org.huberb.iostreams.StreamsBuilder.OutputStreamBuilder;
 import picocli.CommandLine;
 
 /**
@@ -111,7 +116,6 @@ public class Main implements Callable<Integer> {
         }
     }
 
-
     static class Processor {
 
         void process(String mode, InputStream inputStream) throws GenericRuntimeException {
@@ -127,7 +131,7 @@ public class Main implements Callable<Integer> {
         }
 
         void processGzipB64(InputStream xis) throws IOException {
-            // encode AAA -> b64(gzip(AAA)) 
+            // encode AAA -> b64(gzip(AAA))
 
             final OutputStream baosSinkEncode = new IgnoreCloseOutputStream(System.out);
             // AAA -> gzip -> b64encode -> b64gzipAAA
@@ -160,5 +164,6 @@ public class Main implements Callable<Integer> {
 
         }
     }
+
 
 }
