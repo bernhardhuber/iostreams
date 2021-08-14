@@ -1,0 +1,603 @@
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
+import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
+import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/**
+ *
+ * @author pi
+ */
+public class ProcessingModesDecompressTest {
+
+    public ProcessingModesDecompressTest() {
+    }
+
+    @BeforeEach
+    public void setUp() {
+    }
+
+    @AfterEach
+    public void tearDown() {
+    }
+
+    /**
+     * Test of xxxdecompress method, of class ProcessingModesDecompress.
+     *
+     * @throws java.io.IOException
+     */
+    @Test
+    public void test_xxxdecompress_b64dec() throws IOException {
+        String s = "ABC";
+        final Charset charset = Charset.forName("UTF-8");
+        final String sEncoded = Base64.getEncoder().encodeToString(s.getBytes(charset));
+        assertEquals("QUJD", sEncoded);
+
+        final List<Modedecompress> modes = Arrays.asList(Modedecompress.b64dec);
+        try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(sEncoded.getBytes(charset));
+                UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
+
+            final ProcessingModesDecompress xxx = new ProcessingModesDecompress();
+            xxx.xxxdecompress(modes, bais, baos);
+
+            baos.flush();
+
+            final byte[] baosBytes = baos.toByteArray();
+            final String result = new String(baosBytes, charset);
+            assertEquals("ABC", result);
+        }
+    }
+
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.Arrays;
+import java.util.Base64;
+import java.util.List;
+import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
+import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
+import org.huberb.iostreams.commandline.ProcessingModesCompress;
+import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
+import org.junit.jupiter.api.AfterEach;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+/**
+ *
+ * @author pi
+ */
+public class ProcessingModesCompressTest {
+
+    public ProcessingModesCompressTest() {
+    }
+
+    @BeforeEach
+    public void setUp() {
+    }
+
+    @AfterEach
+    public void tearDown() {
+    }
+
+    /**
+     * Test of xxxcompress method, of class ProcessingModesCompress.
+     *
+     * @throws java.io.IOException
+     */
+    @Test
+    public void test_xxxcompress_b64enc() throws IOException {
+        final Charset charset = Charset.forName("UTF-8");
+        String s = "ABC";
+
+        final List<Modecompress> modes = Arrays.asList(Modecompress.b64enc);
+        try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(s.getBytes(charset));
+                UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
+
+            final ProcessingModesCompress xxx = new ProcessingModesCompress();
+            xxx.xxxcompress(modes, bais, baos);
+
+            baos.flush();
+
+            final byte[] baosBytes = baos.toByteArray();
+            final String result = new String(baosBytes, charset);
+            assertEquals("QUJD", result);
+
+            final String resultDecoded = new String(Base64.getDecoder().decode(baosBytes), charset);
+            assertEquals(s, resultDecoded);
+        }
+    }
+
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.IOException;
+import java.io.OutputStream;
+
+/**
+ * Output stream ignoring {@link OutputStream#close()}.
+ * <p>
+ * Usually only used for wrapping {@link System#out}, or {@link System#err}.
+ */
+class IgnoreCloseOutputStream extends OutputStream {
+
+    private final OutputStream delegate;
+
+    public IgnoreCloseOutputStream(OutputStream delegate) {
+        this.delegate = delegate;
+    }
+
+    @Override
+    public void write(int b) throws IOException {
+        delegate.write(b);
+    }
+
+    @Override
+    public void close() throws IOException {
+        // ignore close, just flush
+        delegate.flush();
+    }
+
+    @Override
+    public void flush() throws IOException {
+        delegate.flush();
+    }
+
+    @Override
+    public void write(byte[] b, int off, int len) throws IOException {
+        delegate.write(b, off, len);
+    }
+
+    @Override
+    public void write(byte[] b) throws IOException {
+        delegate.write(b);
+    }
+    
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+/**
+ * Generic {@link RuntimeException} for wrapping {@link Exception}.
+ * <p>
+ * Usually used in lambda expressions.
+ */
+class GenericRuntimeException extends RuntimeException {
+
+    public GenericRuntimeException() {
+    }
+
+    public GenericRuntimeException(String message) {
+        super(message);
+    }
+
+    public GenericRuntimeException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    public GenericRuntimeException(Throwable cause) {
+        super(cause);
+    }
+    
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+
+/**
+ * Input stream ignoring {@link InputStream#close()}.
+ * <p>
+ * Usually only used for wrapping {@link System#in}.
+ */
+class IgnoreCloseInputStream extends InputStream {
+
+    private final InputStream delegate;
+
+    public IgnoreCloseInputStream(InputStream is) {
+        this.delegate = is;
+    }
+
+    @Override
+    public int read() throws IOException {
+        return delegate.read();
+    }
+
+    @Override
+    public int read(byte[] b) throws IOException {
+        return delegate.read(b);
+    }
+
+    @Override
+    public int read(byte[] b, int off, int len) throws IOException {
+        return delegate.read(b, off, len);
+    }
+
+    @Override
+    public byte[] readAllBytes() throws IOException {
+        return delegate.readAllBytes();
+    }
+
+    @Override
+    public byte[] readNBytes(int len) throws IOException {
+        return delegate.readNBytes(len);
+    }
+
+    @Override
+    public int readNBytes(byte[] b, int off, int len) throws IOException {
+        return delegate.readNBytes(b, off, len);
+    }
+
+    @Override
+    public long skip(long n) throws IOException {
+        return delegate.skip(n);
+    }
+
+    @Override
+    public int available() throws IOException {
+        return delegate.available();
+    }
+
+    @Override
+    public void close() throws IOException {
+        // do not close
+    }
+
+    @Override
+    public synchronized void mark(int readlimit) {
+        delegate.mark(readlimit);
+    }
+
+    @Override
+    public synchronized void reset() throws IOException {
+        delegate.reset();
+    }
+
+    @Override
+    public boolean markSupported() {
+        return delegate.markSupported();
+    }
+
+    @Override
+    public long transferTo(OutputStream out) throws IOException {
+        return delegate.transferTo(out);
+    }
+    
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.io.IOUtils;
+import org.huberb.iostreams.StreamsBuilder;
+
+/**
+ *
+ * @author pi
+ */
+class ProcessingModesCompress {
+    
+    enum Modecompress {
+        deflate, gzip, b64enc, mimeFenc
+    }
+
+    List<Modecompress> convertStringToModecompressList(String s) {
+        final List<Modecompress> l = new ArrayList<>();
+        final List<String> sSplittedList = Arrays.asList(s.split(","));
+        for (String t : sSplittedList) {
+            Modecompress u = Modecompress.valueOf(t);
+            l.add(u);
+        }
+        return l;
+    }
+
+    void xxxcompress(List<Modecompress> l, InputStream xis, OutputStream xos) throws IOException {
+        //---
+        final StreamsBuilder.OutputStreamBuilder outputStreamBuilder = new StreamsBuilder.OutputStreamBuilder();
+        final OutputStream baosSinkEncode = xos;
+        outputStreamBuilder.sink(baosSinkEncode);
+        for (Modecompress u : l) {
+            if (u == Modecompress.deflate) {
+                outputStreamBuilder.deflate();
+            } else if (u == Modecompress.gzip) {
+                outputStreamBuilder.gzip();
+            } else if (u == Modecompress.b64enc) {
+                outputStreamBuilder.b64Encode();
+            } else if (u == Modecompress.mimeFenc) {
+                outputStreamBuilder.mimeEncode();
+            }
+        }
+        try (final OutputStream os = outputStreamBuilder.build();final InputStream is = xis) {
+            IOUtils.copy(is, os);
+        }
+    }
+    
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import org.apache.commons.io.IOUtils;
+import org.huberb.iostreams.StreamsBuilder;
+
+/**
+ *
+ * @author pi
+ */
+class ProcessingModesDecompress {
+    
+    enum Modedecompress {
+        inflate, gunzip, b64dec, mimedec
+    }
+
+    List<Modedecompress> convertStringToModedecompressList(String s) {
+        final List<Modedecompress> l = new ArrayList<>();
+        final List<String> sSplittedList = Arrays.asList(s.split(","));
+        for (String t : sSplittedList) {
+            Modedecompress u = Modedecompress.valueOf(t);
+            l.add(u);
+        }
+        return l;
+    }
+
+    void xxxdecompress(List<Modedecompress> l, InputStream xis, OutputStream xos) throws IOException {
+        //---
+        final StreamsBuilder.InputStreamBuilder inputStreamBuilder = new StreamsBuilder.InputStreamBuilder();
+        inputStreamBuilder.source(xis);
+        for (Modedecompress u : l) {
+            if (u == Modedecompress.inflate) {
+                inputStreamBuilder.inflate();
+            } else if (u == Modedecompress.gunzip) {
+                inputStreamBuilder.gunzip();
+            } else if (u == Modedecompress.b64dec) {
+                inputStreamBuilder.b64Decode();
+            } else if (u == Modedecompress.mimedec) {
+                inputStreamBuilder.mimeDecode();
+            }
+        }
+        //final OutputStream baosSinkDecode = new IgnoreCloseOutputStream(System.out);
+        // b64gzipAAA -> b64decode -> gunzip -> AAA
+        try (final OutputStream baosSinkDecode = xos;final InputStream is = inputStreamBuilder.build()) {
+            IOUtils.copy(is, baosSinkDecode);
+        }
+    }
+    
+}
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+package org.huberb.iostreams.commandline;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.Callable;
+import org.apache.commons.io.FileUtils;
+import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
+import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
+import picocli.CommandLine;
+
+/**
+ * Command line application running base64-encoder, base64-decoder,
+ * mime-encoder, mime-decoder, gzip, gunzip, deflate, or inflate.
+ *
+ * @author pi
+ */
+@CommandLine.Command(name = "Main",
+        mixinStandardHelpOptions = true,
+        showAtFileInUsageHelp = true,
+        showDefaultValues = true,
+        version = "Main 0.1-SNAPSHOT",
+        description = "Run iostream tool - %n"
+        + "base64-encoder, base64-decoder, "
+        + "mime-encoder, mime-decoder, "
+        + "gzip, gunzip, "
+        + "deflate, or inflate%n"
+        + ""
+)
+public class Main implements Callable<Integer> {
+
+    // make --form-file, and --stdin mutual exclusive
+    static class FromFileOrStdinExclusive {
+
+        @CommandLine.Option(names = {"--from-file"},
+                paramLabel = "FROM_FILE",
+                description = "read from file name")
+        File fromFile;
+        @CommandLine.Option(names = {"--stdin"},
+                required = false,
+                description = "read from stdin")
+        boolean stdin;
+    }
+    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    private FromFileOrStdinExclusive fromFileOrStdinExclusive;
+
+//    // TODO remove mode, use modesExclusive
+//    @CommandLine.Option(names = {"--mode"},
+//            required = true,
+//            paramLabel = "MODE",
+//            description = "mode : c(ompress) | d(ecompress)")
+//    private String mode;
+
+    /*
+        mode compress:    deflate, gzip, b64enc, mimeenc
+        mode decompress:  inflate, gunzip, b64dec, mimedec
+     */
+    static class ModesExclusive {
+
+        @CommandLine.Option(names = {"--compress"},
+                paramLabel = "COMPRESS",
+                description = "compress input")
+        String compressModes;
+
+        @CommandLine.Option(names = {"--decompress"},
+                paramLabel = "DECOMPRESS",
+                description = "decompress input")
+        String decompressModes;
+
+        enum Mode {
+            unknown, compress, decompress;
+        }
+
+        Mode calcMode() {
+            final Mode mode;
+            if (this.compressModes == null && this.decompressModes == null) {
+                mode = Mode.unknown;
+            } else if (this.compressModes != null && this.decompressModes == null) {
+                mode = Mode.compress;
+            } else if (this.compressModes == null && this.decompressModes != null) {
+                mode = Mode.decompress;
+            } else if (this.compressModes != null && this.decompressModes != null) {
+                mode = Mode.unknown;
+            } else {
+                mode = Mode.unknown;
+            }
+            return mode;
+        }
+
+        List<Modecompress> calcModecompress() {
+            final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
+            final List<Modecompress> result = processingModesCompress.convertStringToModecompressList(this.compressModes);
+            return result;
+        }
+
+        List<Modedecompress> calcModeDecompress() {
+            final ProcessingModesDecompress processingModesCompress = new ProcessingModesDecompress();
+            final List<Modedecompress> result = processingModesCompress.convertStringToModedecompressList(this.compressModes);
+            return result;
+        }
+
+    }
+
+    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    private ModesExclusive modesExclusive;
+
+    public static void main(String[] args) {
+        final int exitCode = new CommandLine(new Main()).execute(args);
+        System.exit(exitCode);
+    }
+
+    @Override
+    public Integer call() throws Exception {
+        final int result;
+        // create input stream
+        final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(fromFileOrStdinExclusive);
+        final Optional<InputStream> optionalInputStream = inputStreamFromExclusiveFactory.create();
+        if (optionalInputStream.isPresent()) {
+            final InputStream is = optionalInputStream.get();
+            final ModesExclusive.Mode mode = this.modesExclusive.calcMode();
+            if (mode == ModesExclusive.Mode.compress) {
+                final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
+                final List<Modecompress> defaultProcessingSteps = Arrays.asList(Modecompress.b64enc, Modecompress.gzip);
+                final OutputStream os = new IgnoreCloseOutputStream(System.out);
+                processingModesCompress.xxxcompress(defaultProcessingSteps, is, os);
+                result = 0;
+            } else if (mode == ModesExclusive.Mode.decompress) {
+                final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
+                final List<Modedecompress> defaultProcessModes = Arrays.asList(Modedecompress.b64dec, Modedecompress.gunzip);
+                final OutputStream os = new IgnoreCloseOutputStream(System.out);
+                processingModesDecompress.xxxdecompress(defaultProcessModes, is, os);
+                result = 0;
+            } else {
+                logErrorMessage("Unknown processing-mode %s%n", this.modesExclusive);
+                result = 1;
+            }
+        } else {
+            logErrorMessage("No input defined%n");
+            result = 1;
+        }
+
+        return result;
+    }
+
+    void logErrorMessage(String fmt, Object... args) {
+        System.err.format(fmt, args);
+    }
+
+    /**
+     * Create an input stream from a file, or stdin.
+     */
+    static class InputStreamFromExclusiveFactory {
+
+        private final FromFileOrStdinExclusive exclusive;
+
+        public InputStreamFromExclusiveFactory(FromFileOrStdinExclusive exclusive) {
+            this.exclusive = exclusive;
+        }
+
+        Optional<InputStream> create() throws IOException {
+            final Optional<InputStream> optInputStream;
+            if (exclusive.fromFile != null) {
+                final InputStream is = FileUtils.openInputStream(exclusive.fromFile);
+                optInputStream = Optional.of(is);
+            } else if (exclusive.stdin) {
+                final InputStream is = new IgnoreCloseInputStream(System.in);
+                optInputStream = Optional.of(is);
+            } else {
+                optInputStream = Optional.empty();
+            }
+            return optInputStream;
+        }
+    }
+
+}

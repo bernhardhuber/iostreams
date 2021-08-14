@@ -1,0 +1,155 @@
+.:
+total 24
+drwxr-xr-x 4 pi pi 4096 Aug 13 22:55 src
+-rw-r--r-- 1 pi pi 7086 Aug 13 23:29 pom.xml
+drwxr-xr-x 8 pi pi 4096 Aug 13 23:45 target
+-rw-r--r-- 1 pi pi  194 Aug 13 23:46 sample_ls_lrt.txt
+-rw-r--r-- 1 pi pi  176 Aug 13 23:47 sample_gzip_b64.txt
+-rw-r--r-- 1 pi pi    0 Aug 13 23:48 sample_ls_lrt_R.txt
+
+./src:
+total 8
+drwxr-xr-x 4 pi pi 4096 Aug 13 22:55 main
+drwxr-xr-x 4 pi pi 4096 Aug 13 22:55 test
+
+./src/main:
+total 8
+drwxr-xr-x 2 pi pi 4096 Aug 13 22:55 resources
+drwxr-xr-x 3 pi pi 4096 Aug 13 22:57 java
+
+./src/main/resources:
+total 0
+
+./src/main/java:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 22:57 org
+
+./src/main/java/org:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 22:57 huberb
+
+./src/main/java/org/huberb:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 22:57 iostreams
+
+./src/main/java/org/huberb/iostreams:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 22:57 commandline
+
+./src/main/java/org/huberb/iostreams/commandline:
+total 4
+-rw-r--r-- 1 pi pi 2236 Aug 13 23:44 Main.java
+
+./src/test:
+total 8
+drwxr-xr-x 2 pi pi 4096 Aug 13 22:55 java
+drwxr-xr-x 2 pi pi 4096 Aug 13 22:55 resources
+
+./src/test/java:
+total 0
+
+./src/test/resources:
+total 0
+
+./target:
+total 716
+drwxr-xr-x 3 pi pi   4096 Aug 13 23:45 generated-sources
+drwxr-xr-x 3 pi pi   4096 Aug 13 23:45 maven-status
+drwxr-xr-x 3 pi pi   4096 Aug 13 23:45 generated-test-sources
+drwxr-xr-x 2 pi pi   4096 Aug 13 23:45 maven-archiver
+-rw-r--r-- 1 pi pi   7221 Aug 13 23:45 iostreams-commandline-1.0-SNAPSHOT.jar
+-rw-r--r-- 1 pi pi 699052 Aug 13 23:45 iostreams-commandline-1.0-SNAPSHOT-main.jar
+drwxr-xr-x 2 pi pi   4096 Aug 13 23:45 test-classes
+drwxr-xr-x 4 pi pi   4096 Aug 13 23:45 classes
+
+./target/generated-sources:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 23:45 annotations
+
+./target/generated-sources/annotations:
+total 0
+
+./target/maven-status:
+total 4
+drwxr-xr-x 4 pi pi 4096 Aug 13 23:45 maven-compiler-plugin
+
+./target/maven-status/maven-compiler-plugin:
+total 8
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 compile
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 testCompile
+
+./target/maven-status/maven-compiler-plugin/compile:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 23:45 default-compile
+
+./target/maven-status/maven-compiler-plugin/compile/default-compile:
+total 8
+-rw-r--r-- 1 pi pi 109 Aug 13 23:45 inputFiles.lst
+-rw-r--r-- 1 pi pi 405 Aug 13 23:45 createdFiles.lst
+
+./target/maven-status/maven-compiler-plugin/testCompile:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 23:45 default-testCompile
+
+./target/maven-status/maven-compiler-plugin/testCompile/default-testCompile:
+total 0
+-rw-r--r-- 1 pi pi 0 Aug 13 23:45 inputFiles.lst
+-rw-r--r-- 1 pi pi 0 Aug 13 23:45 createdFiles.lst
+
+./target/generated-test-sources:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 23:45 test-annotations
+
+./target/generated-test-sources/test-annotations:
+total 0
+
+./target/maven-archiver:
+total 4
+-rw-r--r-- 1 pi pi 134 Aug 13 23:45 pom.properties
+
+./target/test-classes:
+total 0
+
+./target/classes:
+total 8
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 META-INF
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 org
+
+./target/classes/META-INF:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 native-image
+
+./target/classes/META-INF/native-image:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 picocli-generated
+
+./target/classes/META-INF/native-image/picocli-generated:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 org.huberb.iostreams
+
+./target/classes/META-INF/native-image/picocli-generated/org.huberb.iostreams:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 23:45 iostreams-commandline
+
+./target/classes/META-INF/native-image/picocli-generated/org.huberb.iostreams/iostreams-commandline:
+total 12
+-rw-r--r-- 1 pi pi 551 Aug 13 23:45 reflect-config.json
+-rw-r--r-- 1 pi pi  47 Aug 13 23:45 resource-config.json
+-rw-r--r-- 1 pi pi   4 Aug 13 23:45 proxy-config.json
+
+./target/classes/org:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 huberb
+
+./target/classes/org/huberb:
+total 4
+drwxr-xr-x 3 pi pi 4096 Aug 13 23:45 iostreams
+
+./target/classes/org/huberb/iostreams:
+total 4
+drwxr-xr-x 2 pi pi 4096 Aug 13 23:45 commandline
+
+./target/classes/org/huberb/iostreams/commandline:
+total 8
+-rw-r--r-- 1 pi pi 2043 Aug 13 23:45 Main$XFactory.class
+-rw-r--r-- 1 pi pi 1815 Aug 13 23:45 Main.class
