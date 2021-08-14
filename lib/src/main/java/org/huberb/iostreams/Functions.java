@@ -15,8 +15,6 @@
  */
 package org.huberb.iostreams;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Base64;
@@ -26,6 +24,8 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 import java.util.zip.InflaterInputStream;
 import org.apache.commons.io.IOUtils;
+import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
+import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
 
 /**
  * Wrapper of converting, encoding, and compressing functions.
@@ -136,8 +136,8 @@ public class Functions {
          */
         public Function<byte[], byte[]> gzipCompress() {
             return (byte[] source) -> {
-                try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-                    try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
+                try (UnsynchronizedByteArrayOutputStream sink = new UnsynchronizedByteArrayOutputStream()) {
+                    try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(source);
                             GZIPOutputStream gos = new GZIPOutputStream(sink, false)) {
                         IOUtils.copy(bais, gos);
                     }
@@ -157,11 +157,10 @@ public class Functions {
          */
         public Function<byte[], byte[]> gzipDecompress() {
             return (byte[] source) -> {
-                try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-                    try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
+                try (UnsynchronizedByteArrayOutputStream sink = new UnsynchronizedByteArrayOutputStream()) {
+                    try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(source);
                             GZIPInputStream gis = new GZIPInputStream(bais)) {
                         IOUtils.copy(gis, sink);
-
                     }
                     sink.flush();
                     return sink.toByteArray();
@@ -186,8 +185,8 @@ public class Functions {
          */
         public Function<byte[], byte[]> deflateCompress() {
             return (byte[] source) -> {
-                try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-                    try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
+                try (UnsynchronizedByteArrayOutputStream sink = new UnsynchronizedByteArrayOutputStream()) {
+                    try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(source);
                             DeflaterOutputStream gos = new DeflaterOutputStream(sink, false)) {
                         IOUtils.copy(bais, gos);
                     }
@@ -207,8 +206,8 @@ public class Functions {
          */
         public Function<byte[], byte[]> inflateDecompress() {
             return (byte[] source) -> {
-                try (ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-                    try (ByteArrayInputStream bais = new ByteArrayInputStream(source);
+                try (UnsynchronizedByteArrayOutputStream sink = new UnsynchronizedByteArrayOutputStream()) {
+                    try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(source);
                             InflaterInputStream gis = new InflaterInputStream(bais)) {
                         IOUtils.copy(gis, sink);
                     }
