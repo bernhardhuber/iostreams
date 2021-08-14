@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -28,7 +29,7 @@ import picocli.CommandLine;
         version = "Main 0.1-SNAPSHOT",
         description = "Run iostream tool - %n"
         + "base64-encoder, base64-decoder, "
-        + " mime-encoder, mime-decoder, "
+        + "mime-encoder, mime-decoder, "
         + "gzip, gunzip, "
         + "deflate, or inflate%n"
         + ""
@@ -70,18 +71,23 @@ public class Main implements Callable<Integer> {
     public Integer call() throws Exception {
         // create output stream
         final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(exclusive);
-        final InputStream is = inputStreamFromExclusiveFactory.create();
-
-        // select processing mode, and process
-        final Processor xFactory = new Processor();
-        if ("c".equals(this.mode)) {
-            xFactory.processGzipB64(is);
-        } else if ("d".equals(this.mode)) {
-            xFactory.processB64Gunzip(is);
-        }
+        final Optional<InputStream> optionalInputStream = inputStreamFromExclusiveFactory.create();
+        optionalInputStream.ifPresentOrElse(
+                (inputStream) -> {
+                    // select processing mode, and procFess
+                    final Processor xFactory = new Processor();
+                    xFactory.process(this.mode, inputStream);
+                },
+                () -> {
+                    System.err.println("No input defined%n");
+                }
+        );
         return 0;
     }
 
+    /**
+     * Create an input stream from a file, or stdin.
+     */
     static class InputStreamFromExclusiveFactory {
 
         private final FromFileOrStdinExclusive exclusive;
@@ -90,58 +96,67 @@ public class Main implements Callable<Integer> {
             this.exclusive = exclusive;
         }
 
-        InputStream create() throws IOException {
-            final InputStream result;
+        Optional<InputStream> create() throws IOException {
+            final Optional<InputStream> optInputStream;
             if (exclusive.fromFile != null) {
-                result = FileUtils.openInputStream(exclusive.fromFile);
+                final InputStream is = FileUtils.openInputStream(exclusive.fromFile);
+                optInputStream = Optional.of(is);
             } else if (exclusive.stdin) {
-                result = new IgnoreCloseInputStream(System.in);
+                final InputStream is = new IgnoreCloseInputStream(System.in);
+                optInputStream = Optional.of(is);
             } else {
-                // FIXME throw exception, or use Optional
-                return null;
+                optInputStream = Optional.empty();
             }
-            return result;
+            return optInputStream;
         }
     }
 
+
     static class Processor {
+
+        void process(String mode, InputStream inputStream) throws GenericRuntimeException {
+            try {
+                if ("c".equals(mode)) {
+                    this.processGzipB64(inputStream);
+                } else if ("d".equals(mode)) {
+                    this.processB64Gunzip(inputStream);
+                }
+            } catch (IOException ioex) {
+                throw new GenericRuntimeException("process", ioex);
+            }
+        }
 
         void processGzipB64(InputStream xis) throws IOException {
             // encode AAA -> b64(gzip(AAA)) 
 
             final OutputStream baosSinkEncode = new IgnoreCloseOutputStream(System.out);
-            {
+            // AAA -> gzip -> b64encode -> b64gzipAAA
+            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().
+                    sink(baosSinkEncode).
+                    b64Encode().
+                    gzip().
+                    build();
+                    final InputStream is = xis) {
 
-                // AAA -> gzip -> b64encode -> b64gzipAAA
-                try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().
-                        sink(baosSinkEncode).
-                        b64Encode().
-                        gzip().
-                        build();
-                        final InputStream is = xis) {
-
-                    IOUtils.copy(is, os);
-                }
-                baosSinkEncode.flush();
+                IOUtils.copy(is, os);
             }
+            baosSinkEncode.flush();
         }
 
         void processB64Gunzip(final InputStream xis) throws IOException {
             // decode b64(gzip(AAA)) -> AAA
 
             final OutputStream baosSinkDecode = new IgnoreCloseOutputStream(System.out);
-            {
-                // b64gzipAAA -> b64decode -> gunzip -> AAA
-                try (final InputStream source = xis;
-                        final InputStream is = new StreamsBuilder.InputStreamBuilder().
-                                source(source).
-                                b64Decode().
-                                gunzip().
-                                build()) {
-                    IOUtils.copy(is, baosSinkDecode);
-                }
-                baosSinkDecode.flush();
+            // b64gzipAAA -> b64decode -> gunzip -> AAA
+            try (final InputStream source = xis;
+                    final InputStream is = new StreamsBuilder.InputStreamBuilder().
+                            source(source).
+                            b64Decode().
+                            gunzip().
+                            build()) {
+                IOUtils.copy(is, baosSinkDecode);
             }
+            baosSinkDecode.flush();
 
         }
     }
