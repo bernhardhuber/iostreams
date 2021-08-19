@@ -101,7 +101,7 @@ public class Functions {
                 try {
                     return new String(b, "UTF-8");
                 } catch (UnsupportedEncodingException ex) {
-                    throw new StreamsException("convertToString", ex);
+                    throw new IOStreamsException("convertToString", ex);
                 }
             };
         }
@@ -117,7 +117,7 @@ public class Functions {
                 try {
                     return s.getBytes("UTF-8");
                 } catch (UnsupportedEncodingException ex) {
-                    throw new StreamsException("convertToBytes", ex);
+                    throw new IOStreamsException("convertToBytes", ex);
                 }
             };
         }
@@ -144,7 +144,7 @@ public class Functions {
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException("gzipCompress", ioex);
+                    throw new IOStreamsException("gzipCompress", ioex);
                 }
             };
         }
@@ -165,7 +165,7 @@ public class Functions {
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException("gzipDecompress", ioex);
+                    throw new IOStreamsException("gzipDecompress", ioex);
                 }
             };
         }
@@ -193,7 +193,7 @@ public class Functions {
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException("deflateCompress", ioex);
+                    throw new IOStreamsException("deflateCompress", ioex);
                 }
             };
         }
@@ -214,7 +214,7 @@ public class Functions {
                     sink.flush();
                     return sink.toByteArray();
                 } catch (IOException ioex) {
-                    throw new StreamsException("inflateDecompress", ioex);
+                    throw new IOStreamsException("inflateDecompress", ioex);
                 }
             };
         }

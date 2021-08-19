@@ -86,7 +86,7 @@ public class StreamsBuilder {
                 try {
                     return new GZIPOutputStream(os);
                 } catch (IOException ex) {
-                    throw new StreamsException("gzip", ex);
+                    throw new IOStreamsException("gzip", ex);
                 }
             };
             functionList.add(f);
@@ -180,7 +180,7 @@ public class StreamsBuilder {
                 try {
                     return new GZIPInputStream(is);
                 } catch (IOException ex) {
-                    throw new StreamsException("gunzip", ex);
+                    throw new IOStreamsException("gunzip", ex);
                 }
             };
             functionList.add(f);

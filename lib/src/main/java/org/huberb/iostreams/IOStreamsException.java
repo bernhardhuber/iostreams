@@ -26,13 +26,13 @@ import java.io.UnsupportedEncodingException;
  *
  * @author berni3
  */
-public class StreamsException extends RuntimeException {
+public class IOStreamsException extends RuntimeException {
 
-    public StreamsException(String message, IOException cause) {
+    public IOStreamsException(String message, IOException cause) {
         super(message, cause);
     }
 
-    public StreamsException(String message, UnsupportedEncodingException cause) {
+    public IOStreamsException(String message, UnsupportedEncodingException cause) {
         super(message, cause);
     }
 
