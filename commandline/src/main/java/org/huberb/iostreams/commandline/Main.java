@@ -15,6 +15,8 @@
  */
 package org.huberb.iostreams.commandline;
 
+import org.huberb.iostreams.commandline.support.IgnoreCloseOutputStream;
+import org.huberb.iostreams.commandline.support.IgnoreCloseInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -150,29 +152,6 @@ public class Main implements Callable<Integer> {
                 mode = this.modes.mode;
                 modeCompressList = this.modes.modecompressList;
                 modeDecompressList = this.modes.modedecompressList;
-//                if (this.modes == Modes.compressB64
-//                        || this.modes == Modes.compressB64Deflate
-//                        || this.modes == Modes.compressB64Gzip
-//                        || this.modes == Modes.compressDeflate
-//                        || this.modes == Modes.compressGzip
-//                        || this.modes == Modes.compressMime
-//                        || this.modes == Modes.compressMimeDeflate
-//                        || this.modes == Modes.compressMimeGzip) {
-//                    mode = Mode.compress;
-//                    modeCompressList = this.modes.modecompressList;
-//                } else if (this.modes == Modes.decompressB64
-//                        || this.modes == Modes.decompressB64Gunzip
-//                        || this.modes == Modes.decompressB64Inflate
-//                        || this.modes == Modes.decompressGunzip
-//                        || this.modes == Modes.decompressInflate
-//                        || this.modes == Modes.decompressMime
-//                        || this.modes == Modes.decompressMimeGunzip
-//                        || this.modes == Modes.decompressMimeInflate) {
-//                    mode = Mode.decompress;
-//                    modeDecompressList = this.modes.modedecompressList;
-//                } else {
-//                    mode = Mode.unknown;
-//                }
             } else {
                 mode = Mode.unknown;
             }
@@ -236,18 +215,18 @@ public class Main implements Callable<Integer> {
      */
     static class InputStreamFromExclusiveFactory {
 
-        private final FromFileOrStdinExclusive exclusive;
+        private final FromFileOrStdinExclusive fromFileOrStdinExclusive;
 
         public InputStreamFromExclusiveFactory(FromFileOrStdinExclusive exclusive) {
-            this.exclusive = exclusive;
+            this.fromFileOrStdinExclusive = exclusive;
         }
 
         Optional<InputStream> create() throws IOException {
             final Optional<InputStream> optInputStream;
-            if (exclusive.fromFile != null) {
-                final InputStream is = FileUtils.openInputStream(exclusive.fromFile);
+            if (fromFileOrStdinExclusive.fromFile != null) {
+                final InputStream is = FileUtils.openInputStream(fromFileOrStdinExclusive.fromFile);
                 optInputStream = Optional.of(is);
-            } else if (exclusive.stdin) {
+            } else if (fromFileOrStdinExclusive.stdin) {
                 final InputStream is = new IgnoreCloseInputStream(System.in);
                 optInputStream = Optional.of(is);
             } else {

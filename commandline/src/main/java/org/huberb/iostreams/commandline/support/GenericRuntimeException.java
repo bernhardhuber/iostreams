@@ -13,14 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.huberb.iostreams.commandline;
+package org.huberb.iostreams.commandline.support;
 
 /**
  * Generic {@link RuntimeException} for wrapping {@link Exception}.
  * <p>
  * Usually used in lambda expressions.
  */
-class GenericRuntimeException extends RuntimeException {
+public class GenericRuntimeException extends RuntimeException {
 
     public GenericRuntimeException() {
     }

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.huberb.iostreams.commandline;
+package org.huberb.iostreams.commandline.support;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -24,7 +24,7 @@ import java.io.OutputStream;
  * <p>
  * Usually only used for wrapping {@link System#in}.
  */
-class IgnoreCloseInputStream extends InputStream {
+public class IgnoreCloseInputStream extends InputStream {
 
     private final InputStream delegate;
 
