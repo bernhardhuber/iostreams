@@ -1,7 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright 2021 pi.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *      http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 package org.huberb.iostreams.commandline;
 
@@ -59,29 +69,35 @@ public class Main implements Callable<Integer> {
      */
     static class ModesExclusive {
 
+        enum Mode {
+            unknown, compress, decompress;
+        }
+
         enum Modes {
             //---
-            compressB64(Arrays.asList(Modecompress.b64enc), null),
-            compressMime(Arrays.asList(Modecompress.mimeFenc), null),
-            compressGzip(Arrays.asList(Modecompress.gzip), null),
-            compressDeflate(Arrays.asList(Modecompress.deflate), null),
-            compressB64Gzip(Arrays.asList(Modecompress.b64enc, Modecompress.gzip), null),
-            compressMimeGzip(Arrays.asList(Modecompress.mimeFenc, Modecompress.gzip), null),
-            compressB64Deflate(Arrays.asList(Modecompress.b64enc, Modecompress.deflate), null),
-            compressMimeDeflate(Arrays.asList(Modecompress.mimeFenc, Modecompress.deflate), null),
+            compressB64(Mode.compress, Arrays.asList(Modecompress.b64enc), null),
+            compressMime(Mode.compress, Arrays.asList(Modecompress.mimeFenc), null),
+            compressGzip(Mode.compress, Arrays.asList(Modecompress.gzip), null),
+            compressDeflate(Mode.compress, Arrays.asList(Modecompress.deflate), null),
+            compressB64Gzip(Mode.compress, Arrays.asList(Modecompress.b64enc, Modecompress.gzip), null),
+            compressMimeGzip(Mode.compress, Arrays.asList(Modecompress.mimeFenc, Modecompress.gzip), null),
+            compressB64Deflate(Mode.compress, Arrays.asList(Modecompress.b64enc, Modecompress.deflate), null),
+            compressMimeDeflate(Mode.compress, Arrays.asList(Modecompress.mimeFenc, Modecompress.deflate), null),
             //---
-            decompressB64(null, Arrays.asList(Modedecompress.b64dec)),
-            decompressMime(null, Arrays.asList(Modedecompress.mimedec)),
-            decompressGunzip(null, Arrays.asList(Modedecompress.gunzip)),
-            decompressInflate(null, Arrays.asList(Modedecompress.inflate)),
-            decompressB64Gunzip(null, Arrays.asList(Modedecompress.b64dec, Modedecompress.gunzip)),
-            decompressMimeGunzip(null, Arrays.asList(Modedecompress.mimedec, Modedecompress.gunzip)),
-            decompressB64Inflate(null, Arrays.asList(Modedecompress.b64dec, Modedecompress.inflate)),
-            decompressMimeInflate(null, Arrays.asList(Modedecompress.mimedec, Modedecompress.inflate));
+            decompressB64(Mode.decompress, null, Arrays.asList(Modedecompress.b64dec)),
+            decompressMime(Mode.decompress, null, Arrays.asList(Modedecompress.mimedec)),
+            decompressGunzip(Mode.decompress, null, Arrays.asList(Modedecompress.gunzip)),
+            decompressInflate(Mode.decompress, null, Arrays.asList(Modedecompress.inflate)),
+            decompressB64Gunzip(Mode.decompress, null, Arrays.asList(Modedecompress.b64dec, Modedecompress.gunzip)),
+            decompressMimeGunzip(Mode.decompress, null, Arrays.asList(Modedecompress.mimedec, Modedecompress.gunzip)),
+            decompressB64Inflate(Mode.decompress, null, Arrays.asList(Modedecompress.b64dec, Modedecompress.inflate)),
+            decompressMimeInflate(Mode.decompress, null, Arrays.asList(Modedecompress.mimedec, Modedecompress.inflate));
             final List<Modecompress> modecompressList;
             final List<Modedecompress> modedecompressList;
+            final Mode mode;
 
-            private Modes(List<Modecompress> modecompressList, List<Modedecompress> modedecompressList) {
+            private Modes(Mode mode, List<Modecompress> modecompressList, List<Modedecompress> modedecompressList) {
+                this.mode = mode;
                 this.modecompressList = modecompressList;
                 this.modedecompressList = modedecompressList;
             }
@@ -102,10 +118,6 @@ public class Main implements Callable<Integer> {
                 description = "Valid values: ${COMPLETION-CANDIDATES}\"")
         Modes modes;
 
-        enum Mode {
-            unknown, compress, decompress;
-        }
-
         static class ProcessingControl {
 
             final Mode mode;
@@ -117,10 +129,9 @@ public class Main implements Callable<Integer> {
                 this.modecompressList = modecompressList;
                 this.modedecompressList = modedecompressList;
             }
-
         }
 
-        ProcessingControl build(ModesExclusive modesExclusive) {
+        ProcessingControl build() {
             final Mode mode;
             List<Modecompress> modeCompressList = null;
             List<Modedecompress> modeDecompressList = null;
@@ -133,32 +144,35 @@ public class Main implements Callable<Integer> {
             } else if (this.compressModes == null && this.decompressModes != null && this.modes == null) {
                 mode = Mode.decompress;
                 final ProcessingModesDecompress processingModesCompress = new ProcessingModesDecompress();
-                final List<Modedecompress> result = processingModesCompress.convertStringToModedecompressList(this.compressModes);
+                final List<Modedecompress> result = processingModesCompress.convertStringToModedecompressList(this.decompressModes);
                 modeDecompressList = result;
             } else if (this.compressModes == null && this.decompressModes == null && this.modes != null) {
-                if (this.modes == Modes.compressB64
-                        || this.modes == Modes.compressB64Deflate
-                        || this.modes == Modes.compressB64Gzip
-                        || this.modes == Modes.compressDeflate
-                        || this.modes == Modes.compressGzip
-                        || this.modes == Modes.compressMime
-                        || this.modes == Modes.compressMimeDeflate
-                        || this.modes == Modes.compressMimeGzip) {
-                    mode = Mode.compress;
-                    modeCompressList = this.modes.modecompressList;
-                } else if (this.modes == Modes.decompressB64
-                        || this.modes == Modes.decompressB64Gunzip
-                        || this.modes == Modes.decompressB64Inflate
-                        || this.modes == Modes.decompressGunzip
-                        || this.modes == Modes.decompressInflate
-                        || this.modes == Modes.decompressMime
-                        || this.modes == Modes.decompressMimeGunzip
-                        || this.modes == Modes.decompressMimeInflate) {
-                    mode = Mode.decompress;
-                    modeDecompressList = this.modes.modedecompressList;
-                } else {
-                    mode = Mode.unknown;
-                }
+                mode = this.modes.mode;
+                modeCompressList = this.modes.modecompressList;
+                modeDecompressList = this.modes.modedecompressList;
+//                if (this.modes == Modes.compressB64
+//                        || this.modes == Modes.compressB64Deflate
+//                        || this.modes == Modes.compressB64Gzip
+//                        || this.modes == Modes.compressDeflate
+//                        || this.modes == Modes.compressGzip
+//                        || this.modes == Modes.compressMime
+//                        || this.modes == Modes.compressMimeDeflate
+//                        || this.modes == Modes.compressMimeGzip) {
+//                    mode = Mode.compress;
+//                    modeCompressList = this.modes.modecompressList;
+//                } else if (this.modes == Modes.decompressB64
+//                        || this.modes == Modes.decompressB64Gunzip
+//                        || this.modes == Modes.decompressB64Inflate
+//                        || this.modes == Modes.decompressGunzip
+//                        || this.modes == Modes.decompressInflate
+//                        || this.modes == Modes.decompressMime
+//                        || this.modes == Modes.decompressMimeGunzip
+//                        || this.modes == Modes.decompressMimeInflate) {
+//                    mode = Mode.decompress;
+//                    modeDecompressList = this.modes.modedecompressList;
+//                } else {
+//                    mode = Mode.unknown;
+//                }
             } else {
                 mode = Mode.unknown;
             }
@@ -184,15 +198,18 @@ public class Main implements Callable<Integer> {
         if (optionalInputStream.isPresent()) {
             final InputStream is = optionalInputStream.get();
 
-            final ModesExclusive.ProcessingControl processingControl = this.modesExclusive.build(this.modesExclusive);
+            // Calc Mode, and Modecompress, Modedecompress values
+            final ModesExclusive.ProcessingControl processingControl = this.modesExclusive.build();
             final ModesExclusive.Mode mode = processingControl.mode;
             if (mode == ModesExclusive.Mode.compress) {
+                // run Mode.compress, List<Modecompress>
                 final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
                 final List<Modecompress> defaultProcessingSteps = processingControl.modecompressList;
                 final OutputStream os = new IgnoreCloseOutputStream(System.out);
                 processingModesCompress.xxxcompress(defaultProcessingSteps, is, os);
                 result = 0;
             } else if (mode == ModesExclusive.Mode.decompress) {
+                // run Mode.decompress, List<Modedecompress>
                 final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
                 final List<Modedecompress> defaultProcessModes = processingControl.modedecompressList;
                 final OutputStream os = new IgnoreCloseOutputStream(System.out);
@@ -212,7 +229,6 @@ public class Main implements Callable<Integer> {
 
     void logErrorMessage(String fmt, Object... args) {
         System.err.format(fmt, args);
-
     }
 
     /**
