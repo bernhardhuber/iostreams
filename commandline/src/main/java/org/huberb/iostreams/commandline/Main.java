@@ -78,13 +78,13 @@ public class Main implements Callable<Integer> {
         enum Modes {
             //---
             compressB64(Mode.compress, Arrays.asList(Modecompress.b64enc), null),
-            compressMime(Mode.compress, Arrays.asList(Modecompress.mimeFenc), null),
+            compressMime(Mode.compress, Arrays.asList(Modecompress.mimeenc), null),
             compressGzip(Mode.compress, Arrays.asList(Modecompress.gzip), null),
             compressDeflate(Mode.compress, Arrays.asList(Modecompress.deflate), null),
             compressB64Gzip(Mode.compress, Arrays.asList(Modecompress.b64enc, Modecompress.gzip), null),
-            compressMimeGzip(Mode.compress, Arrays.asList(Modecompress.mimeFenc, Modecompress.gzip), null),
+            compressMimeGzip(Mode.compress, Arrays.asList(Modecompress.mimeenc, Modecompress.gzip), null),
             compressB64Deflate(Mode.compress, Arrays.asList(Modecompress.b64enc, Modecompress.deflate), null),
-            compressMimeDeflate(Mode.compress, Arrays.asList(Modecompress.mimeFenc, Modecompress.deflate), null),
+            compressMimeDeflate(Mode.compress, Arrays.asList(Modecompress.mimeenc, Modecompress.deflate), null),
             //---
             decompressB64(Mode.decompress, null, Arrays.asList(Modedecompress.b64dec)),
             decompressMime(Mode.decompress, null, Arrays.asList(Modedecompress.mimedec)),
@@ -140,13 +140,11 @@ public class Main implements Callable<Integer> {
 
             if (this.compressModes != null && this.decompressModes == null && this.modes == null) {
                 mode = Mode.compress;
-                final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
-                final List<Modecompress> result = processingModesCompress.convertStringToModecompressList(this.compressModes);
+                final List<Modecompress> result = ProcessingModesCompress.Modecompress.convertStringToModecompressList(this.compressModes);
                 modeCompressList = result;
             } else if (this.compressModes == null && this.decompressModes != null && this.modes == null) {
                 mode = Mode.decompress;
-                final ProcessingModesDecompress processingModesCompress = new ProcessingModesDecompress();
-                final List<Modedecompress> result = processingModesCompress.convertStringToModedecompressList(this.decompressModes);
+                final List<Modedecompress> result = ProcessingModesDecompress.Modedecompress.convertStringToModedecompressList(this.decompressModes);
                 modeDecompressList = result;
             } else if (this.compressModes == null && this.decompressModes == null && this.modes != null) {
                 mode = this.modes.mode;

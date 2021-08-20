@@ -29,21 +29,40 @@ import org.huberb.iostreams.StreamsBuilder;
  * @author pi
  */
 class ProcessingModesCompress {
-    
+
+    /**
+     * Supported compress modes.
+     */
     enum Modecompress {
-        deflate, gzip, b64enc, mimeFenc
-    }
+        deflate, gzip, b64enc, mimeenc;
 
-    List<Modecompress> convertStringToModecompressList(String s) {
-        final List<Modecompress> l = new ArrayList<>();
-        final List<String> sSplittedList = Arrays.asList(s.split(","));
-        for (String t : sSplittedList) {
-            Modecompress u = Modecompress.valueOf(t);
-            l.add(u);
+        /**
+         * Convert a comma separated string of mode compress modes to a list
+         * of {@link Modecompress} values.
+         * 
+         * @param s
+         * @return 
+         */
+        static List<Modecompress> convertStringToModecompressList(String s) {
+            final List<Modecompress> l = new ArrayList<>();
+            final List<String> sSplittedList = Arrays.asList(s.split(","));
+            for (String t : sSplittedList) {
+                if (t==null || t.isEmpty()) continue;
+                Modecompress u = Modecompress.valueOf(t);
+                l.add(u);
+            }
+            return l;
         }
-        return l;
     }
 
+    /**
+     * Process compress modes.
+     * 
+     * @param l
+     * @param xis
+     * @param xos
+     * @throws IOException 
+     */
     void xxxcompress(List<Modecompress> l, InputStream xis, OutputStream xos) throws IOException {
         //---
         final StreamsBuilder.OutputStreamBuilder outputStreamBuilder = new StreamsBuilder.OutputStreamBuilder();
@@ -56,13 +75,13 @@ class ProcessingModesCompress {
                 outputStreamBuilder.gzip();
             } else if (u == Modecompress.b64enc) {
                 outputStreamBuilder.b64Encode();
-            } else if (u == Modecompress.mimeFenc) {
+            } else if (u == Modecompress.mimeenc) {
                 outputStreamBuilder.mimeEncode();
             }
         }
-        try (final OutputStream os = outputStreamBuilder.build();final InputStream is = xis) {
+        try (final OutputStream os = outputStreamBuilder.build(); final InputStream is = xis) {
             IOUtils.copy(is, os);
         }
     }
-    
+
 }

@@ -29,19 +29,19 @@ import org.huberb.iostreams.StreamsBuilder;
  * @author pi
  */
 class ProcessingModesDecompress {
-    
-    enum Modedecompress {
-        inflate, gunzip, b64dec, mimedec
-    }
 
-    List<Modedecompress> convertStringToModedecompressList(String s) {
-        final List<Modedecompress> l = new ArrayList<>();
-        final List<String> sSplittedList = Arrays.asList(s.split(","));
-        for (String t : sSplittedList) {
-            Modedecompress u = Modedecompress.valueOf(t);
-            l.add(u);
+    enum Modedecompress {
+        inflate, gunzip, b64dec, mimedec;
+
+        static List<Modedecompress> convertStringToModedecompressList(String s) {
+            final List<Modedecompress> l = new ArrayList<>();
+            final List<String> sSplittedList = Arrays.asList(s.split(","));
+            for (String t : sSplittedList) {
+                Modedecompress u = Modedecompress.valueOf(t);
+                l.add(u);
+            }
+            return l;
         }
-        return l;
     }
 
     void xxxdecompress(List<Modedecompress> l, InputStream xis, OutputStream xos) throws IOException {
@@ -61,9 +61,9 @@ class ProcessingModesDecompress {
         }
         //final OutputStream baosSinkDecode = new IgnoreCloseOutputStream(System.out);
         // b64gzipAAA -> b64decode -> gunzip -> AAA
-        try (final OutputStream baosSinkDecode = xos;final InputStream is = inputStreamBuilder.build()) {
+        try (final OutputStream baosSinkDecode = xos; final InputStream is = inputStreamBuilder.build()) {
             IOUtils.copy(is, baosSinkDecode);
         }
     }
-    
+
 }
