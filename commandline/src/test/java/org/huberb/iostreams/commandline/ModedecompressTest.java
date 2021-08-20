@@ -18,7 +18,6 @@ package org.huberb.iostreams.commandline;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
 import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -68,15 +67,4 @@ public class ModedecompressTest {
         return result;
     }
 
-    static class Tuple<R, S> {
-
-        final R r;
-        final S s;
-
-        public Tuple(R r, S s) {
-            this.r = r;
-            this.s = s;
-        }
-
-    }
 }
