@@ -43,7 +43,7 @@ public class ProcessingModesDecompressTest {
     @Test
     public void test_xxxdecompress_b64dec() throws IOException {
         String s = "ABC";
-        final Charset charset = Charset.forName("UTF-8");
+        final Charset charset =  StandardCharsets.UTF_8;
         final String sEncoded = Base64.getEncoder().encodeToString(s.getBytes(charset));
         assertEquals("QUJD", sEncoded);
 

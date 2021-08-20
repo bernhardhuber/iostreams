@@ -18,6 +18,8 @@ package org.huberb.iostreams.commandline.support;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
@@ -55,7 +57,7 @@ public class IgnoreCloseOutputStreamTest {
         final IgnoreCloseOutputStream ignoreCloseOutputStream = new IgnoreCloseOutputStream(spyBaos);
 
         final String s = "ABC";
-        final Charset charset = Charset.forName("UTF-8");
+        final Charset charset = StandardCharsets.UTF_8;
 
         try (ignoreCloseOutputStream) {
             ignoreCloseOutputStream.write(s.getBytes(charset));

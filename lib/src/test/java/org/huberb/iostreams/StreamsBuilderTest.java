@@ -21,6 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.StringWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -49,6 +51,8 @@ public class StreamsBuilderTest {
     @ParameterizedTest
     @MethodSource(value = "createSampleDataStream")
     public void test_String_B64EncGzip_GunzipB64Dec(String s) throws IOException {
+        final Charset charset = StandardCharsets.UTF_8;
+                
         LOG.log(Level.INFO, "test_String_B64EncGzip_GunzipB64Dec input {0}", s);
 
         // encode AAA -> b64(gzip(AAA)) 
@@ -61,13 +65,13 @@ public class StreamsBuilderTest {
                     b64Encode().
                     gzip().
                     build();
-                    final InputStream is = IOUtils.toInputStream(s, "UTF-8")) {
+                    final InputStream is = IOUtils.toInputStream(s, charset)) {
                 IOUtils.copy(is, os);
             }
             baosSinkEncode.flush();
         }
 
-        LOG.log(Level.INFO, "gzipB64Encode {0}", baosSinkEncode.toString("UTF-8"));
+        LOG.log(Level.INFO, "gzipB64Encode {0}", baosSinkEncode.toString(charset));
 
         // decode b64(gzip(AAA)) -> AAA
         final byte[] bytesOfBaosSinkEncoded = baosSinkEncode.toByteArray();
@@ -84,14 +88,16 @@ public class StreamsBuilderTest {
             }
             baosSinkDecode.flush();
         }
-        LOG.log(Level.INFO, "b64DecodeGunzip {0}", baosSinkDecode.toString("UTF-8"));
+        LOG.log(Level.INFO, "b64DecodeGunzip {0}", baosSinkDecode.toString(charset));
 
-        assertEquals(s, baosSinkDecode.toString("UTF-8"));
+        assertEquals(s, baosSinkDecode.toString(charset));
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 10, 100, 100})
     public void test_XmlParent_MimeEncGzip_GunzipB64Dec(int n) throws IOException {
+        final Charset charset =  StandardCharsets.UTF_8;
+
         final SampleXmlData.XmlParent xmlParent = new SampleXmlData.XmlParentFactory().createSample(n, "testXml100_");
         LOG.log(Level.INFO, "test_XmlParent_MimeEncGzip_GunzipB64Dec input {0}", xmlParent);
 
@@ -106,7 +112,7 @@ public class StreamsBuilderTest {
             }
             baosSinkEncode.flush();
         }
-        LOG.log(Level.INFO, "gzipMimeEncode {0}", baosSinkEncode.toString("UTF-8"));
+        LOG.log(Level.INFO, "gzipMimeEncode {0}", baosSinkEncode.toString(charset));
         byte[] bytes = baosSinkEncode.toByteArray();
         final SampleXmlData.XmlParent xmlParent2;
         {

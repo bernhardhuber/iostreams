@@ -17,6 +17,7 @@ package org.huberb.iostreams.commandline;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -59,7 +60,7 @@ public class ProcessingModesDecompressTest {
         "ÄÖÜß, w4TDlsOcw58="
     })
     public void test_xxxdecompress_b64dec(String sOriginal, String sOriginalB64Encoded) throws IOException {
-        final Charset charset = Charset.forName("UTF-8");
+        final Charset charset = StandardCharsets.UTF_8;
         final String sEncoded = Base64.getEncoder().encodeToString(sOriginal.getBytes(charset));
         assertEquals(sOriginalB64Encoded, sEncoded);
 

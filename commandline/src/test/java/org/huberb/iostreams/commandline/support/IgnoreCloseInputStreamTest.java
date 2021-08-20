@@ -17,6 +17,8 @@ package org.huberb.iostreams.commandline.support;
 
 import java.io.ByteArrayInputStream;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,7 +51,7 @@ public class IgnoreCloseInputStreamTest {
     @Test
     public void testRead_0args() throws Exception {
         final String s = "ABC";
-        final Charset charset = Charset.forName("UTF-8");
+        final Charset charset = StandardCharsets.UTF_8;
 
         ByteArrayInputStream bais = new ByteArrayInputStream(s.getBytes(charset));
         ByteArrayInputStream spyBais = Mockito.spy(bais);

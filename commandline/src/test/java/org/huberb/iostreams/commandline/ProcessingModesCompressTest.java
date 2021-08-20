@@ -17,6 +17,7 @@ package org.huberb.iostreams.commandline;
 
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.List;
@@ -54,14 +55,10 @@ public class ProcessingModesCompressTest {
      * @throws java.io.IOException
      */
     @ParameterizedTest
-    @CsvSource(value = {
-        "ABC, QUJD",
-        "0123456789, MDEyMzQ1Njc4OQ==",
-        "abcdefghijklmnopqrstuvwxyz, YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=",
-        "ÄÖÜß, w4TDlsOcw58="
-    })
+    @CsvSource(value = { "ABC, QUJD", "0123456789, MDEyMzQ1Njc4OQ==",
+            "abcdefghijklmnopqrstuvwxyz, YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=", "ÄÖÜß, w4TDlsOcw58=" })
     public void test_xxxcompress_b64enc(String s, String sB64Encoded) throws IOException {
-        final Charset charset = Charset.forName("UTF-8");
+        final Charset charset = StandardCharsets.UTF_8;
         final String m = String.format("original %s, b64encoded %s", s, sB64Encoded);
         final List<Modecompress> modes = Arrays.asList(Modecompress.B64ENC);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(s.getBytes(charset));

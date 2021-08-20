@@ -20,6 +20,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.logging.Level;
@@ -40,28 +42,29 @@ import org.junit.jupiter.params.provider.MethodSource;
  */
 public class B64GzipStreamTest {
 
-     private static final Logger LOG = Logger.getLogger(B64GzipStreamTest.class.getName());
+    private static final Logger LOG = Logger.getLogger(B64GzipStreamTest.class.getName());
 
     @BeforeAll
     public static void beforeAll() {
         LOG.setLevel(Level.OFF);
     }
 
-
     @ParameterizedTest
     @MethodSource(value = "createSampleDataStream")
     public void test_GzipB64encode_B64decodeGunzip(String s) throws IOException {
+        final Charset charset = StandardCharsets.UTF_8;
 
         LOG.log(Level.INFO, "test_GzipB64encode_B64decodeGunzip input {0}", s);
         final byte[] buffer;
         {
             try (final ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-                try (final ByteArrayInputStream source = new ByteArrayInputStream(s.getBytes("UTF-8"));
-                        final OutputStream pipe = new ChunkedOutputStream(new GZIPOutputStream(Base64.getEncoder().wrap(sink), false))) {
+                try (final ByteArrayInputStream source = new ByteArrayInputStream(s.getBytes(charset));
+                        final OutputStream pipe = new ChunkedOutputStream(
+                                new GZIPOutputStream(Base64.getEncoder().wrap(sink), false))) {
                     IOUtils.copy(source, pipe);
                 }
                 sink.flush();
-                //LOG.log(Level.INFO, "GzipB46Encode {0}", sink.toString("UTF-8"));
+                // LOG.log(Level.INFO, "GzipB46Encode {0}", sink.toString(charset));
                 buffer = sink.toByteArray();
             }
         }
@@ -73,8 +76,8 @@ public class B64GzipStreamTest {
                     IOUtils.copy(pipe, sink);
                 }
                 sink.flush();
-                LOG.log(Level.INFO, "b46DecodeGunzip {0}", sink.toString("UTF-8"));
-                assertEquals(s, sink.toString("UTF-8"));
+                LOG.log(Level.INFO, "b46DecodeGunzip {0}", sink.toString(charset));
+                assertEquals(s, sink.toString(charset));
             }
         }
     }
@@ -82,17 +85,18 @@ public class B64GzipStreamTest {
     @ParameterizedTest
     @MethodSource(value = "createSampleDataStream")
     public void test_Gzip_Gunzip(String s) throws IOException {
+        final Charset charset = StandardCharsets.UTF_8;
 
         LOG.log(Level.INFO, "test_Gzip_Gunzip input {0}", s);
         final byte[] buffer;
         {
             try (final ByteArrayOutputStream sink = new ByteArrayOutputStream()) {
-                try (final ByteArrayInputStream source = new ByteArrayInputStream(s.getBytes("UTF-8"));
+                try (final ByteArrayInputStream source = new ByteArrayInputStream(s.getBytes(charset));
                         final OutputStream pipe = new ChunkedOutputStream(new GZIPOutputStream(sink))) {
                     IOUtils.copy(source, pipe);
                 }
                 sink.flush();
-                //LOG.log(Level.INFO, "Gzip {0}", sink.toString("UTF-8"));
+                // LOG.log(Level.INFO, "Gzip {0}", sink.toString(charset));
                 buffer = sink.toByteArray();
             }
         }
@@ -104,8 +108,8 @@ public class B64GzipStreamTest {
                     IOUtils.copy(pipe, sink);
                 }
                 sink.flush();
-                LOG.log(Level.INFO, "Gunzip {0}", sink.toString("UTF-8"));
-                assertEquals(s, sink.toString("UTF-8"));
+                LOG.log(Level.INFO, "Gunzip {0}", sink.toString(charset));
+                assertEquals(s, sink.toString(charset));
             }
         }
     }
@@ -117,12 +121,8 @@ public class B64GzipStreamTest {
      */
     static Stream<String> createSampleDataStream() {
         final SampleData sampleData = new SampleData();
-        return Arrays.asList(
-                "A", "abc",
-                sampleData.createSmallSample(),
-                sampleData.createSample("1234567890!\"§$%&/()=?", 64),
-                sampleData.createSample("Hello", 128),
-                sampleData.createSample("Lorem ipsum", 512)
-        ).stream();
+        return Arrays.asList("A", "abc", sampleData.createSmallSample(),
+                sampleData.createSample("1234567890!\"§$%&/()=?", 64), sampleData.createSample("Hello", 128),
+                sampleData.createSample("Lorem ipsum", 512)).stream();
     }
 }
