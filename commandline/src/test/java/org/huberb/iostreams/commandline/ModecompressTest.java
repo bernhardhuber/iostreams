@@ -42,6 +42,11 @@ public class ModecompressTest {
     public void tearDown() {
     }
 
+    /**
+     * Test method {@link  Modecompress#convertStringToModecompressList}.
+     *
+     * @param t
+     */
     @ParameterizedTest
     @MethodSource("sampleData")
     public void testConvertStringToModecompress(Tuple<String, List<Modecompress>> t) {
@@ -50,7 +55,7 @@ public class ModecompressTest {
 
         final String m = String.format("input %s, modecompress %s", s, l);
         assertEquals(l,
-                ProcessingModesCompress.Modecompress.convertStringToModecompressList(s),
+                Modecompress.convertStringToModecompressList(s),
                 m);
     }
 

@@ -42,6 +42,11 @@ public class ModedecompressTest {
     public void tearDown() {
     }
 
+    /**
+     * Test method {@link Modedecompress#convertStringToModedecompressList}.
+     *
+     * @param t
+     */
     @ParameterizedTest
     @MethodSource("sampleData")
     public void testConvertStringToModedecompress(Tuple<String, List<Modedecompress>> t) {

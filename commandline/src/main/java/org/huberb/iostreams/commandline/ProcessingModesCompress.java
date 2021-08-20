@@ -25,30 +25,33 @@ import org.apache.commons.io.IOUtils;
 import org.huberb.iostreams.StreamsBuilder;
 
 /**
+ * Process compressing modes.
  *
  * @author pi
  */
 class ProcessingModesCompress {
 
     /**
-     * Supported compress modes.
+     * Define supported compress modes.
      */
     enum Modecompress {
         deflate, gzip, b64enc, mimeenc;
 
         /**
-         * Convert a comma separated string of mode compress modes to a list
-         * of {@link Modecompress} values.
-         * 
+         * Convert a comma separated string of mode compress modes to a list of
+         * {@link Modecompress} values.
+         *
          * @param s
-         * @return 
+         * @return
          */
         static List<Modecompress> convertStringToModecompressList(String s) {
             final List<Modecompress> l = new ArrayList<>();
             final List<String> sSplittedList = Arrays.asList(s.split(","));
             for (String t : sSplittedList) {
-                if (t==null || t.isEmpty()) continue;
-                Modecompress u = Modecompress.valueOf(t);
+                if (t == null || t.isEmpty()) {
+                    continue;
+                }
+                final Modecompress u = Modecompress.valueOf(t);
                 l.add(u);
             }
             return l;
@@ -57,11 +60,11 @@ class ProcessingModesCompress {
 
     /**
      * Process compress modes.
-     * 
+     *
      * @param l
      * @param xis
      * @param xos
-     * @throws IOException 
+     * @throws IOException
      */
     void xxxcompress(List<Modecompress> l, InputStream xis, OutputStream xos) throws IOException {
         //---

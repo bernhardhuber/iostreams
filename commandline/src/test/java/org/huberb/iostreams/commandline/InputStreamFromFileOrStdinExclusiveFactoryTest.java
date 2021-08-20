@@ -21,7 +21,7 @@ import java.io.InputStream;
 import java.nio.file.Path;
 import java.util.Optional;
 import org.huberb.iostreams.commandline.Main.FromFileOrStdinExclusive;
-import org.huberb.iostreams.commandline.Main.InputStreamFromExclusiveFactory;
+import org.huberb.iostreams.commandline.Main.InputStreamFromFileOrStdinExclusiveFactory;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
@@ -34,9 +34,9 @@ import org.junit.jupiter.api.io.TempDir;
  *
  * @author pi
  */
-public class InputStreamFromExclusiveFactoryTest {
+public class InputStreamFromFileOrStdinExclusiveFactoryTest {
 
-    public InputStreamFromExclusiveFactoryTest() {
+    public InputStreamFromFileOrStdinExclusiveFactoryTest() {
     }
 
     @BeforeEach
@@ -53,7 +53,7 @@ public class InputStreamFromExclusiveFactoryTest {
         inputStreamFromExclusive.fromFile = null;
         inputStreamFromExclusive.stdin = true;
 
-        final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(inputStreamFromExclusive);
+        final InputStreamFromFileOrStdinExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromFileOrStdinExclusiveFactory(inputStreamFromExclusive);
         final Optional<InputStream> result = inputStreamFromExclusiveFactory.create();
         assertFalse(result.isEmpty());
         assertTrue(result.isPresent());
@@ -73,7 +73,7 @@ public class InputStreamFromExclusiveFactoryTest {
         inputStreamFromExclusive.fromFile = aFile;
         inputStreamFromExclusive.stdin = false;
 
-        final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(inputStreamFromExclusive);
+        final InputStreamFromFileOrStdinExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromFileOrStdinExclusiveFactory(inputStreamFromExclusive);
         final Optional<InputStream> result = inputStreamFromExclusiveFactory.create();
         assertFalse(result.isEmpty());
         assertTrue(result.isPresent());
@@ -86,7 +86,7 @@ public class InputStreamFromExclusiveFactoryTest {
         inputStreamFromExclusive.fromFile = null;
         inputStreamFromExclusive.stdin = false;
 
-        final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(inputStreamFromExclusive);
+        final InputStreamFromFileOrStdinExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromFileOrStdinExclusiveFactory(inputStreamFromExclusive);
         final Optional<InputStream> result = inputStreamFromExclusiveFactory.create();
         assertTrue(result.isEmpty());
         assertFalse(result.isPresent());

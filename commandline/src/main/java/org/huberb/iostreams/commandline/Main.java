@@ -170,7 +170,7 @@ public class Main implements Callable<Integer> {
     public Integer call() throws Exception {
         final int result;
         // create input stream
-        final InputStreamFromExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromExclusiveFactory(fromFileOrStdinExclusive);
+        final InputStreamFromFileOrStdinExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromFileOrStdinExclusiveFactory(fromFileOrStdinExclusive);
         final Optional<InputStream> optionalInputStream = inputStreamFromExclusiveFactory.create();
         if (optionalInputStream.isPresent()) {
             final InputStream is = optionalInputStream.get();
@@ -211,11 +211,11 @@ public class Main implements Callable<Integer> {
     /**
      * Create an input stream from a file, or stdin.
      */
-    static class InputStreamFromExclusiveFactory {
+    static class InputStreamFromFileOrStdinExclusiveFactory {
 
         private final FromFileOrStdinExclusive fromFileOrStdinExclusive;
 
-        public InputStreamFromExclusiveFactory(FromFileOrStdinExclusive exclusive) {
+        public InputStreamFromFileOrStdinExclusiveFactory(FromFileOrStdinExclusive exclusive) {
             this.fromFileOrStdinExclusive = exclusive;
         }
 

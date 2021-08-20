@@ -25,25 +25,47 @@ import org.apache.commons.io.IOUtils;
 import org.huberb.iostreams.StreamsBuilder;
 
 /**
+ * Process decompressing modes.
  *
  * @author pi
  */
 class ProcessingModesDecompress {
 
+    /**
+     * Define supported decompress modes.
+     */
     enum Modedecompress {
         inflate, gunzip, b64dec, mimedec;
 
+        /**
+         * Convert a comma separated string of mode decompress modes to a list
+         * of {@link Modedecompress} values.
+         *
+         * @param s
+         * @return
+         */
         static List<Modedecompress> convertStringToModedecompressList(String s) {
             final List<Modedecompress> l = new ArrayList<>();
             final List<String> sSplittedList = Arrays.asList(s.split(","));
             for (String t : sSplittedList) {
-                Modedecompress u = Modedecompress.valueOf(t);
+                if (t == null || t.isEmpty()) {
+                    continue;
+                }
+                final Modedecompress u = Modedecompress.valueOf(t);
                 l.add(u);
             }
             return l;
         }
     }
 
+    /**
+     * Process decompress modes.
+     *
+     * @param l
+     * @param xis
+     * @param xos
+     * @throws IOException
+     */
     void xxxdecompress(List<Modedecompress> l, InputStream xis, OutputStream xos) throws IOException {
         //---
         final StreamsBuilder.InputStreamBuilder inputStreamBuilder = new StreamsBuilder.InputStreamBuilder();

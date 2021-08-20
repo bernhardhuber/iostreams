@@ -26,7 +26,8 @@ import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  *
@@ -50,25 +51,30 @@ public class ProcessingModesDecompressTest {
      *
      * @throws java.io.IOException
      */
-    @Test
-    public void test_xxxdecompress_b64dec() throws IOException {
-        String s = "ABC";
+    @ParameterizedTest
+    @CsvSource(value = {
+        "ABC, QUJD",
+        "0123456789, MDEyMzQ1Njc4OQ==",
+        "abcdefghijklmnopqrstuvwxyz, YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=",
+        "ÄÖÜß, w4TDlsOcw58="
+    })
+    public void test_xxxdecompress_b64dec(String sOriginal, String sOriginalB64Encoded) throws IOException {
         final Charset charset = Charset.forName("UTF-8");
-        final String sEncoded = Base64.getEncoder().encodeToString(s.getBytes(charset));
-        assertEquals("QUJD", sEncoded);
+        final String sEncoded = Base64.getEncoder().encodeToString(sOriginal.getBytes(charset));
+        assertEquals(sOriginalB64Encoded, sEncoded);
 
         final List<Modedecompress> modes = Arrays.asList(Modedecompress.b64dec);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(sEncoded.getBytes(charset));
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 
-            final ProcessingModesDecompress xxx = new ProcessingModesDecompress();
-            xxx.xxxdecompress(modes, bais, baos);
+            final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
+            processingModesDecompress.xxxdecompress(modes, bais, baos);
 
             baos.flush();
 
             final byte[] baosBytes = baos.toByteArray();
             final String result = new String(baosBytes, charset);
-            assertEquals("ABC", result);
+            assertEquals(sOriginal, result);
         }
     }
 

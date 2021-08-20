@@ -26,7 +26,8 @@ import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
 import org.junit.jupiter.api.AfterEach;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 /**
  *
@@ -48,29 +49,35 @@ public class ProcessingModesCompressTest {
     /**
      * Test of xxxcompress method, of class ProcessingModesCompress.
      *
+     * @param s
+     * @param sB64Encoded
      * @throws java.io.IOException
      */
-    @Test
-    public void test_xxxcompress_b64enc() throws IOException {
+    @ParameterizedTest
+    @CsvSource(value = {
+        "ABC, QUJD",
+        "0123456789, MDEyMzQ1Njc4OQ==",
+        "abcdefghijklmnopqrstuvwxyz, YWJjZGVmZ2hpamtsbW5vcHFyc3R1dnd4eXo=",
+        "ÄÖÜß, w4TDlsOcw58="
+    })
+    public void test_xxxcompress_b64enc(String s, String sB64Encoded) throws IOException {
         final Charset charset = Charset.forName("UTF-8");
-        String s = "ABC";
-
+        final String m = String.format("original %s, b64encoded %s", s, sB64Encoded);
         final List<Modecompress> modes = Arrays.asList(Modecompress.b64enc);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(s.getBytes(charset));
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 
-            final ProcessingModesCompress xxx = new ProcessingModesCompress();
-            xxx.xxxcompress(modes, bais, baos);
+            final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
+            processingModesCompress.xxxcompress(modes, bais, baos);
 
             baos.flush();
 
             final byte[] baosBytes = baos.toByteArray();
             final String result = new String(baosBytes, charset);
-            assertEquals("QUJD", result);
+            assertEquals(sB64Encoded, result, m);
 
             final String resultDecoded = new String(Base64.getDecoder().decode(baosBytes), charset);
-            assertEquals(s, resultDecoded);
+            assertEquals(s, resultDecoded, m);
         }
     }
-
 }
