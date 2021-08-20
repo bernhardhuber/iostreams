@@ -16,7 +16,7 @@
 package org.huberb.iostreams;
 
 import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.function.Function;
 import java.util.zip.DeflaterOutputStream;
@@ -40,8 +40,7 @@ public class Functions {
     public static class FBase64 {
 
         /**
-         * Creates a function to encode a byte array using type base64 encoding
-         * scheme.
+         * Creates a function to encode a byte array using type base64 encoding scheme.
          *
          * @return
          * @see Base64
@@ -51,8 +50,7 @@ public class Functions {
         }
 
         /**
-         * Creates a function to encode a byte array using type base64 encoding
-         * scheme.
+         * Creates a function to encode a byte array using type base64 encoding scheme.
          *
          * @return
          * @see Base64
@@ -62,8 +60,7 @@ public class Functions {
         }
 
         /**
-         * Creates a function to decode a byte array using type base64 decoding
-         * scheme.
+         * Creates a function to decode a byte array using type base64 decoding scheme.
          *
          * @return
          * @see Base64
@@ -73,8 +70,7 @@ public class Functions {
         }
 
         /**
-         * Creates a function to encode a byte array using type base64 decoding
-         * scheme.
+         * Creates a function to encode a byte array using type base64 decoding scheme.
          *
          * @return
          * @see Base64
@@ -97,13 +93,7 @@ public class Functions {
          * @see java.lang.String#String(byte[], java.nio.charset.Charset)
          */
         public Function<byte[], String> convertToString() {
-            return (byte[] b) -> {
-                try {
-                    return new String(b, "UTF-8");
-                } catch (UnsupportedEncodingException ex) {
-                    throw new IOStreamsException("convertToString", ex);
-                }
-            };
+            return (byte[] b) -> new String(b, StandardCharsets.UTF_8);
         }
 
         /**
@@ -113,13 +103,7 @@ public class Functions {
          * @see java.lang.String#getBytes(java.nio.charset.Charset)
          */
         public Function<String, byte[]> convertToBytes() {
-            return (String s) -> {
-                try {
-                    return s.getBytes("UTF-8");
-                } catch (UnsupportedEncodingException ex) {
-                    throw new IOStreamsException("convertToBytes", ex);
-                }
-            };
+            return (String s) -> s.getBytes(StandardCharsets.UTF_8);
         }
     }
 
