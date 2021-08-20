@@ -35,7 +35,7 @@ class ProcessingModesDecompress {
      * Define supported decompress modes.
      */
     enum Modedecompress {
-        inflate, gunzip, b64dec, mimedec;
+        INFLATE, GUNZIP, B64DEC, MIMEDEC;
 
         /**
          * Convert a comma separated string of mode decompress modes to a list
@@ -71,17 +71,16 @@ class ProcessingModesDecompress {
         final StreamsBuilder.InputStreamBuilder inputStreamBuilder = new StreamsBuilder.InputStreamBuilder();
         inputStreamBuilder.source(xis);
         for (Modedecompress u : l) {
-            if (u == Modedecompress.inflate) {
+            if (u == Modedecompress.INFLATE) {
                 inputStreamBuilder.inflate();
-            } else if (u == Modedecompress.gunzip) {
+            } else if (u == Modedecompress.GUNZIP) {
                 inputStreamBuilder.gunzip();
-            } else if (u == Modedecompress.b64dec) {
+            } else if (u == Modedecompress.B64DEC) {
                 inputStreamBuilder.b64Decode();
-            } else if (u == Modedecompress.mimedec) {
+            } else if (u == Modedecompress.MIMEDEC) {
                 inputStreamBuilder.mimeDecode();
             }
         }
-        //final OutputStream baosSinkDecode = new IgnoreCloseOutputStream(System.out);
         // b64gzipAAA -> b64decode -> gunzip -> AAA
         try (final OutputStream baosSinkDecode = xos; final InputStream is = inputStreamBuilder.build()) {
             IOUtils.copy(is, baosSinkDecode);

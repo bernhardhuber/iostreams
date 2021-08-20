@@ -63,7 +63,7 @@ public class ProcessingModesCompressTest {
     public void test_xxxcompress_b64enc(String s, String sB64Encoded) throws IOException {
         final Charset charset = Charset.forName("UTF-8");
         final String m = String.format("original %s, b64encoded %s", s, sB64Encoded);
-        final List<Modecompress> modes = Arrays.asList(Modecompress.b64enc);
+        final List<Modecompress> modes = Arrays.asList(Modecompress.B64ENC);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(s.getBytes(charset));
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 

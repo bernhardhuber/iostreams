@@ -35,7 +35,7 @@ class ProcessingModesCompress {
      * Define supported compress modes.
      */
     enum Modecompress {
-        deflate, gzip, b64enc, mimeenc;
+        DEFLATE, GZIP, B64ENC, MIMEENC;
 
         /**
          * Convert a comma separated string of mode compress modes to a list of
@@ -72,13 +72,13 @@ class ProcessingModesCompress {
         final OutputStream baosSinkEncode = xos;
         outputStreamBuilder.sink(baosSinkEncode);
         for (Modecompress u : l) {
-            if (u == Modecompress.deflate) {
+            if (u == Modecompress.DEFLATE) {
                 outputStreamBuilder.deflate();
-            } else if (u == Modecompress.gzip) {
+            } else if (u == Modecompress.GZIP) {
                 outputStreamBuilder.gzip();
-            } else if (u == Modecompress.b64enc) {
+            } else if (u == Modecompress.B64ENC) {
                 outputStreamBuilder.b64Encode();
-            } else if (u == Modecompress.mimeenc) {
+            } else if (u == Modecompress.MIMEENC) {
                 outputStreamBuilder.mimeEncode();
             }
         }

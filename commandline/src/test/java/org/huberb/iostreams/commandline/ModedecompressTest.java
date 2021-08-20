@@ -62,11 +62,11 @@ public class ModedecompressTest {
     static Stream<Tuple<String, List<Modedecompress>>> sampleData() {
 
         final List<Tuple<String, List<Modedecompress>>> l = Arrays.asList(
-                new Tuple<>("b64dec", Arrays.asList(Modedecompress.b64dec)),
-                new Tuple<>("gunzip", Arrays.asList(Modedecompress.gunzip)),
-                new Tuple<>("inflate", Arrays.asList(Modedecompress.inflate)),
-                new Tuple<>("mimedec", Arrays.asList(Modedecompress.mimedec)),
-                new Tuple<>("b64dec,gunzip,inflate,mimedec", Arrays.asList(Modedecompress.b64dec, Modedecompress.gunzip, Modedecompress.inflate, Modedecompress.mimedec))
+                new Tuple<>("B64DEC", Arrays.asList(Modedecompress.B64DEC)),
+                new Tuple<>("GUNZIP", Arrays.asList(Modedecompress.GUNZIP)),
+                new Tuple<>("INFLATE", Arrays.asList(Modedecompress.INFLATE)),
+                new Tuple<>("MIMEDEC", Arrays.asList(Modedecompress.MIMEDEC)),
+                new Tuple<>("B64DEC,GUNZIP,INFLATE,MIMEDEC", Arrays.asList(Modedecompress.B64DEC, Modedecompress.GUNZIP, Modedecompress.INFLATE, Modedecompress.MIMEDEC))
         );
         final Stream<Tuple<String, List<Modedecompress>>> result = l.stream();
         return result;

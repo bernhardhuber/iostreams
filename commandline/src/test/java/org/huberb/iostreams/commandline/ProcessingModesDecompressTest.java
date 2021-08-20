@@ -63,7 +63,7 @@ public class ProcessingModesDecompressTest {
         final String sEncoded = Base64.getEncoder().encodeToString(sOriginal.getBytes(charset));
         assertEquals(sOriginalB64Encoded, sEncoded);
 
-        final List<Modedecompress> modes = Arrays.asList(Modedecompress.b64dec);
+        final List<Modedecompress> modes = Arrays.asList(Modedecompress.B64DEC);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(sEncoded.getBytes(charset));
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 
