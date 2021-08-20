@@ -52,20 +52,16 @@ public class StreamsBuilderTest {
     @MethodSource(value = "createSampleDataStream")
     public void test_String_B64EncGzip_GunzipB64Dec(String s) throws IOException {
         final Charset charset = StandardCharsets.UTF_8;
-                
+
         LOG.log(Level.INFO, "test_String_B64EncGzip_GunzipB64Dec input {0}", s);
 
-        // encode AAA -> b64(gzip(AAA)) 
+        // encode AAA -> b64(gzip(AAA))
         final ByteArrayOutputStream baosSinkEncode = new ByteArrayOutputStream();
         {
 
             // AAA -> gzip -> b64encode -> b64gzipAAA
-            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().
-                    sink(baosSinkEncode).
-                    b64Encode().
-                    gzip().
-                    build();
-                    final InputStream is = IOUtils.toInputStream(s, charset)) {
+            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().sink(baosSinkEncode).b64Encode()
+                    .gzip().build(); final InputStream is = IOUtils.toInputStream(s, charset)) {
                 IOUtils.copy(is, os);
             }
             baosSinkEncode.flush();
@@ -79,11 +75,8 @@ public class StreamsBuilderTest {
         {
             // b64gzipAAA -> b64decode -> gunzip -> AAA
             try (final ByteArrayInputStream source = new ByteArrayInputStream(bytesOfBaosSinkEncoded);
-                    final InputStream is = new StreamsBuilder.InputStreamBuilder().
-                            source(source).
-                            b64Decode().
-                            gunzip().
-                            build()) {
+                    final InputStream is = new StreamsBuilder.InputStreamBuilder().source(source).b64Decode().gunzip()
+                            .build()) {
                 IOUtils.copy(is, baosSinkDecode);
             }
             baosSinkDecode.flush();
@@ -94,20 +87,55 @@ public class StreamsBuilderTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {1, 10, 100, 100})
+    @MethodSource(value = "createSampleDataStream")
+    public void test_String_MimeEncDeflate_InflateMimeDec(String s) throws IOException {
+        final Charset charset = StandardCharsets.UTF_8;
+
+        LOG.log(Level.INFO, "test_String_MimeEncDeflate_InflateMimeDec input {0}", s);
+
+        // encode AAA -> mime(defalte(AAA))
+        final ByteArrayOutputStream baosSinkEncode = new ByteArrayOutputStream();
+        {
+
+            // AAA -> defalte -> mimeencode -> mimedeflateAAA
+            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().sink(baosSinkEncode).mimeEncode()
+                    .deflate().build(); final InputStream is = IOUtils.toInputStream(s, charset)) {
+                IOUtils.copy(is, os);
+            }
+            baosSinkEncode.flush();
+        }
+
+        LOG.log(Level.INFO, "deflateMimeEncode {0}", baosSinkEncode.toString(charset));
+
+        // decode mime(inflate(AAA)) -> AAA
+        final byte[] bytesOfBaosSinkEncoded = baosSinkEncode.toByteArray();
+        final ByteArrayOutputStream baosSinkDecode = new ByteArrayOutputStream();
+        {
+            // mimeInflateAAA -> mimedecode -> inflate -> AAA
+            try (final ByteArrayInputStream source = new ByteArrayInputStream(bytesOfBaosSinkEncoded);
+                    final InputStream is = new StreamsBuilder.InputStreamBuilder().source(source).mimeDecode().inflate()
+                            .build()) {
+                IOUtils.copy(is, baosSinkDecode);
+            }
+            baosSinkDecode.flush();
+        }
+        LOG.log(Level.INFO, "mimeDecodeInflate {0}", baosSinkDecode.toString(charset));
+
+        assertEquals(s, baosSinkDecode.toString(charset));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1, 10, 100, 100 })
     public void test_XmlParent_MimeEncGzip_GunzipB64Dec(int n) throws IOException {
-        final Charset charset =  StandardCharsets.UTF_8;
+        final Charset charset = StandardCharsets.UTF_8;
 
         final SampleXmlData.XmlParent xmlParent = new SampleXmlData.XmlParentFactory().createSample(n, "testXml100_");
         LOG.log(Level.INFO, "test_XmlParent_MimeEncGzip_GunzipB64Dec input {0}", xmlParent);
 
         final ByteArrayOutputStream baosSinkEncode = new ByteArrayOutputStream();
         {
-            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().
-                    sink(baosSinkEncode).
-                    mimeEncode().
-                    gzip().
-                    build()) {
+            try (final OutputStream os = new StreamsBuilder.OutputStreamBuilder().sink(baosSinkEncode).mimeEncode()
+                    .gzip().build()) {
                 JAXB.marshal(xmlParent, os);
             }
             baosSinkEncode.flush();
@@ -117,11 +145,8 @@ public class StreamsBuilderTest {
         final SampleXmlData.XmlParent xmlParent2;
         {
             final ByteArrayInputStream source = new ByteArrayInputStream(bytes);
-            try (final InputStream is = new StreamsBuilder.InputStreamBuilder().
-                    source(source).
-                    mimeDecode().
-                    gunzip().
-                    build()) {
+            try (final InputStream is = new StreamsBuilder.InputStreamBuilder().source(source).mimeDecode().gunzip()
+                    .build()) {
                 xmlParent2 = JAXB.unmarshal(is, SampleXmlData.XmlParent.class);
             }
         }
@@ -129,8 +154,7 @@ public class StreamsBuilderTest {
 
         assertEquals(xmlParent.getParentName(), xmlParent2.getParentName());
 
-        try (StringWriter swXmlParent = new StringWriter();
-                StringWriter swXmlParent2 = new StringWriter()) {
+        try (StringWriter swXmlParent = new StringWriter(); StringWriter swXmlParent2 = new StringWriter()) {
             JAXB.marshal(xmlParent, swXmlParent);
             JAXB.marshal(xmlParent2, swXmlParent2);
 
@@ -149,14 +173,9 @@ public class StreamsBuilderTest {
      */
     static Stream<String> createSampleDataStream() {
         final SampleData sampleData = new SampleData();
-        return Arrays.asList(
-                "A",
-                "abc",
-                sampleData.createSmallSample(),
-                sampleData.createSample("1234567890!\"§$%&/()=?", 64),
-                sampleData.createSample("Hello", 128),
-                sampleData.createSample("Lorem ipsum", 512)
-        ).stream();
+        return Arrays.asList("A", "abc", sampleData.createSmallSample(),
+                sampleData.createSample("1234567890!\"§$%&/()=?", 64), sampleData.createSample("Hello", 128),
+                sampleData.createSample("Lorem ipsum", 512)).stream();
     }
 
 }

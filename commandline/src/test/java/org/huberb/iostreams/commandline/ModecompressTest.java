@@ -50,8 +50,8 @@ public class ModecompressTest {
     @ParameterizedTest
     @MethodSource("sampleData")
     public void testConvertStringToModecompress(Tuple<String, List<Modecompress>> t) {
-        final String s = t.r;
-        final List<Modecompress> l = t.s;
+        final String s = t.r();
+        final List<Modecompress> l = t.s();
 
         final String m = String.format("input %s, modecompress %s", s, l);
         assertEquals(l,
@@ -59,6 +59,11 @@ public class ModecompressTest {
                 m);
     }
 
+    /**
+     * Generate sample  data.
+     * 
+     * @return tuple of string representation, and parsed enum representation.
+     */
     static Stream<Tuple<String, List<Modecompress>>> sampleData() {
 
         final List<Tuple<String, List<Modecompress>>> l = Arrays.asList(
@@ -66,6 +71,8 @@ public class ModecompressTest {
                 new Tuple<>("DEFLATE", Arrays.asList(Modecompress.DEFLATE)),
                 new Tuple<>("GZIP", Arrays.asList(Modecompress.GZIP)),
                 new Tuple<>("MIMEENC", Arrays.asList(Modecompress.MIMEENC)),
+                new Tuple<>("B64ENC,GZIP", Arrays.asList(Modecompress.B64ENC, Modecompress.GZIP)),
+                new Tuple<>("MIMEENC,DEFLATE", Arrays.asList(Modecompress.MIMEENC, Modecompress.DEFLATE)),
                 new Tuple<>("B64ENC,DEFLATE,GZIP,MIMEENC", Arrays.asList(Modecompress.B64ENC, Modecompress.DEFLATE, Modecompress.GZIP, Modecompress.MIMEENC))
         );
         final Stream<Tuple<String, List<Modecompress>>> result = l.stream();

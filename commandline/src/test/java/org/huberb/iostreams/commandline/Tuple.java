@@ -16,17 +16,31 @@
 package org.huberb.iostreams.commandline;
 
 /**
- *
+ * Simple tuple implementation.
+ * 
  * @author pi
  */
 class Tuple<R, S> {
-    
-    final R r;
-    final S s;
+
+    private final R r;
+    private final S s;
 
     public Tuple(R r, S s) {
         this.r = r;
         this.s = s;
     }
-    
+
+    R r() {
+        return this.r;
+    }
+
+    S s() {
+        return this.s;
+    }
+
+    @Override
+    public String toString() {
+        return String.format("R %s, S %s", this.r, this.s);
+    }
+
 }
