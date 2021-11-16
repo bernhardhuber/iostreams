@@ -15,8 +15,6 @@
  */
 package org.huberb.iostreams.commandline;
 
-import org.huberb.iostreams.commandline.support.IgnoreCloseOutputStream;
-import org.huberb.iostreams.commandline.support.IgnoreCloseInputStream;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -28,6 +26,8 @@ import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
 import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
 import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
+import org.huberb.iostreams.commandline.support.IgnoreCloseInputStream;
+import org.huberb.iostreams.commandline.support.IgnoreCloseOutputStream;
 import picocli.CommandLine;
 
 /**
@@ -173,28 +173,29 @@ public class Main implements Callable<Integer> {
         final InputStreamFromFileOrStdinExclusiveFactory inputStreamFromExclusiveFactory = new InputStreamFromFileOrStdinExclusiveFactory(fromFileOrStdinExclusive);
         final Optional<InputStream> optionalInputStream = inputStreamFromExclusiveFactory.create();
         if (optionalInputStream.isPresent()) {
-            final InputStream is = optionalInputStream.get();
-
-            // Calc Mode, and Modecompress, Modedecompress values
-            final ModesExclusive.ProcessingControl processingControl = this.modesExclusive.build();
-            final ModesExclusive.Mode mode = processingControl.mode;
-            if (mode == ModesExclusive.Mode.COMPRESS) {
-                // run Mode.compress, List<Modecompress>
-                final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
-                final List<Modecompress> defaultProcessingSteps = processingControl.modecompressList;
-                final OutputStream os = new IgnoreCloseOutputStream(System.out);
-                processingModesCompress.xxxcompress(defaultProcessingSteps, is, os);
-                result = 0;
-            } else if (mode == ModesExclusive.Mode.DECOMPRESS) {
-                // run Mode.decompress, List<Modedecompress>
-                final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
-                final List<Modedecompress> defaultProcessModes = processingControl.modedecompressList;
-                final OutputStream os = new IgnoreCloseOutputStream(System.out);
-                processingModesDecompress.xxxdecompress(defaultProcessModes, is, os);
-                result = 0;
-            } else {
-                logErrorMessage("Unknown processing-mode %s%n", this.modesExclusive);
-                result = 1;
+            // don't forget to close is
+            try (final InputStream is = optionalInputStream.get()) {
+                // Calc Mode, and Modecompress, Modedecompress values
+                final ModesExclusive.ProcessingControl processingControl = this.modesExclusive.build();
+                final ModesExclusive.Mode mode = processingControl.mode;
+                if (mode == ModesExclusive.Mode.COMPRESS) {
+                    // run Mode.compress, List<Modecompress>
+                    final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
+                    final List<Modecompress> defaultProcessingSteps = processingControl.modecompressList;
+                    final OutputStream os = new IgnoreCloseOutputStream(System.out);
+                    processingModesCompress.xxxcompress(defaultProcessingSteps, is, os);
+                    result = 0;
+                } else if (mode == ModesExclusive.Mode.DECOMPRESS) {
+                    // run Mode.decompress, List<Modedecompress>
+                    final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
+                    final List<Modedecompress> defaultProcessModes = processingControl.modedecompressList;
+                    final OutputStream os = new IgnoreCloseOutputStream(System.out);
+                    processingModesDecompress.xxxdecompress(defaultProcessModes, is, os);
+                    result = 0;
+                } else {
+                    logErrorMessage("Unknown processing-mode %s%n", this.modesExclusive);
+                    result = 1;
+                }
             }
         } else {
             logErrorMessage("No input defined%n");
