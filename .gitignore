@@ -27,4 +27,4 @@ hs_err_pid*
 /commandline/nbproject/
 /commandline/inp.txt
 /commandline/inp_gzip_b64.txt
-/commandline/inp_gzip_b64_b65_gunzip.txt
+/commandline/inp_gzip_b64_b64_gunzip.txt
