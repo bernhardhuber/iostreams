@@ -18,8 +18,8 @@ ${JAVA_CMD} -jar ${JAR_FILE} \
 ${JAVA_CMD} -jar ${JAR_FILE} \
 	--modes=decompressB64Gunzip \
 	--from-file=inp_gzip_b64.txt \
-	> inp_gzip_b64_b65_gunzip.txt
+	> inp_gzip_b64_b64_gunzip.txt
 
 # verify input file and decompressed compressed input file
-diff -s inp.txt inp_gzip_b64_b65_gunzip.txt
+diff -s inp.txt inp_gzip_b64_b64_gunzip.txt
 echo "diff rc $?"
