@@ -58,6 +58,7 @@ public class InputStreamFromFileOrStdinExclusiveFactoryTest {
         assertFalse(result.isEmpty());
         assertTrue(result.isPresent());
         assertEquals("org.huberb.iostreams.commandline.support.IgnoreCloseInputStream", result.get().getClass().getName());
+        result.get().close();
     }
 
     @Test
@@ -78,6 +79,7 @@ public class InputStreamFromFileOrStdinExclusiveFactoryTest {
         assertFalse(result.isEmpty());
         assertTrue(result.isPresent());
         assertEquals("java.io.FileInputStream", result.get().getClass().getName());
+        result.get().close();
     }
 
     @Test
