@@ -71,5 +71,5 @@ to inp_gzip_b64_b65_gunzip.txt
 java -jar target/iostreams-commandline-1.0-SNAPSHOT-main.jar \
   --modes=decompressB64Gunzip \
   --from-file=inp_gzip_b64.txt \
-  > inp_gzip_b64_b65_gunzip.txt
+  > inp_gzip_b64_b64_gunzip.txt
 ```
