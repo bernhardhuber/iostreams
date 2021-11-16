@@ -2,8 +2,10 @@
 
 #set -x
 
+#
 JAVA_CMD="$JAVA_HOME/bin/java"
 JAR_FILE=target/iostreams-commandline-1.0-SNAPSHOT-main.jar
+
 # generate sample input file
 ls -R > inp.txt
 
