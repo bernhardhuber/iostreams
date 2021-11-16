@@ -1,8 +1,8 @@
-#iostreams-commandline
+# iostreams-commandline
 
 Commandline for compressing, and decompressing from a file, or stdin.
 
-# Usage
+## Usage
 
 ```
 Usage: Main [-hV] (--from-file=FROM_FILE | --stdin) (--compress=COMPRESS |
@@ -50,7 +50,7 @@ Supported operations, and modes:
 | decompress | decompressB64Inflate  | decode input using b64+inflate    |
 | decompress | decompressMimeInflate | decode input using mime+inflate   |
 
-#Example A
+## Example A
 
 Compress input file inp.txt using gzip + b64 
 to inp_gzip_b64.txt
@@ -62,7 +62,7 @@ java -jar target/iostreams-commandline-1.0-SNAPSHOT-main.jar \
   > inp_gzip_b64.txt
 ```
 
-#Example B
+## Example B
 
 Decompress input file inp_gzip_b64.txt using b64 + gunzip 
 to inp_gzip_b64_b65_gunzip.txt
