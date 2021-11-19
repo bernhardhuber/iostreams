@@ -48,7 +48,7 @@ public class ProcessingModesDecompressTest {
     }
 
     /**
-     * Test of xxxdecompress method, of class ProcessingModesDecompress.
+     * Test of processModedecompress method, of class ProcessingModesDecompress.
      *
      * @throws java.io.IOException
      */
@@ -69,7 +69,7 @@ public class ProcessingModesDecompressTest {
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 
             final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
-            processingModesDecompress.xxxdecompress(modes, bais, baos);
+            processingModesDecompress.processModedecompress(modes, bais, baos);
 
             baos.flush();
 

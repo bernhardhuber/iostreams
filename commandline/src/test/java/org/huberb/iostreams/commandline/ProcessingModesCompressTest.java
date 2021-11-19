@@ -48,7 +48,7 @@ public class ProcessingModesCompressTest {
     }
 
     /**
-     * Test of xxxcompress method, of class ProcessingModesCompress.
+     * Test of processModecompress method, of class ProcessingModesCompress.
      *
      * @param s
      * @param sB64Encoded
@@ -65,7 +65,7 @@ public class ProcessingModesCompressTest {
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 
             final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
-            processingModesCompress.xxxcompress(modes, bais, baos);
+            processingModesCompress.processModecompress(modes, bais, baos);
 
             baos.flush();
 

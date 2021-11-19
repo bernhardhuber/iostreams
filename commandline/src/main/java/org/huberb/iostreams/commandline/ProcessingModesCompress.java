@@ -61,17 +61,18 @@ class ProcessingModesCompress {
     /**
      * Process compress modes.
      *
-     * @param l
-     * @param xis
-     * @param xos
+     * @param modecompressList
+     * @param inputStream
+     * @param outputStreamSink
      * @throws IOException
      */
-    void xxxcompress(List<Modecompress> l, InputStream xis, OutputStream xos) throws IOException {
+    void processModecompress(List<Modecompress> modecompressList,
+            InputStream inputStream,
+            OutputStream outputStreamSink) throws IOException {
         //---
         final StreamsBuilder.OutputStreamBuilder outputStreamBuilder = new StreamsBuilder.OutputStreamBuilder();
-        final OutputStream baosSinkEncode = xos;
-        outputStreamBuilder.sink(baosSinkEncode);
-        for (Modecompress u : l) {
+        outputStreamBuilder.sink(outputStreamSink);
+        for (Modecompress u : modecompressList) {
             if (u == Modecompress.DEFLATE) {
                 outputStreamBuilder.deflate();
             } else if (u == Modecompress.GZIP) {
@@ -82,7 +83,7 @@ class ProcessingModesCompress {
                 outputStreamBuilder.mimeEncode();
             }
         }
-        try (final OutputStream os = outputStreamBuilder.build(); final InputStream is = xis) {
+        try (final OutputStream os = outputStreamBuilder.build(); final InputStream is = inputStream) {
             IOUtils.copy(is, os);
         }
     }
