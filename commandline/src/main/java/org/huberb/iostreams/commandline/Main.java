@@ -40,8 +40,8 @@ import picocli.CommandLine;
         mixinStandardHelpOptions = true,
         showAtFileInUsageHelp = true,
         showDefaultValues = true,
-        version = "Main 0.1-SNAPSHOT",
-        description = "Run iostream tool - %n"
+        version = "iostreams 0.1-SNAPSHOT",
+        description = "Run convert input using - %n"
         + "base64-encoder, base64-decoder, "
         + "mime-encoder, mime-decoder, "
         + "gzip, gunzip, "
@@ -55,7 +55,7 @@ public class Main implements Callable<Integer> {
 
         @CommandLine.Option(names = {"--from-file"},
                 paramLabel = "FROM_FILE",
-                description = "Read from file name")
+                description = "Read from a file")
         File fromFile;
         @CommandLine.Option(names = {"--stdin"},
                 required = false,
@@ -106,18 +106,18 @@ public class Main implements Callable<Integer> {
         }
 
         @CommandLine.Option(names = {"--compress"},
-                paramLabel = "COMPRESS",
-                description = "Compress input")
-        String compressModes;
+                paramLabel = "COMPRESS", split = ",",
+                description = "Valid values: \"${COMPLETION-CANDIDATES}\"")
+        List<Modecompress> modecompressListOption;
 
         @CommandLine.Option(names = {"--decompress"},
-                paramLabel = "DECOMPRESS",
-                description = "Decompress input")
-        String decompressModes;
+                paramLabel = "DECOMPRESS", split = ",",
+                description = "Valid values: \"${COMPLETION-CANDIDATES}\"")
+        List<Modedecompress> modedecompressListOption;
 
         @CommandLine.Option(names = {"--modes"},
                 paramLabel = "MODES",
-                description = "Valid values: ${COMPLETION-CANDIDATES}\"")
+                description = "Valid values: \"${COMPLETION-CANDIDATES}\"")
         Modes modes;
 
         static class ProcessingControl {
@@ -138,15 +138,13 @@ public class Main implements Callable<Integer> {
             List<Modecompress> modeCompressList = null;
             List<Modedecompress> modeDecompressList = null;
 
-            if (this.compressModes != null && this.decompressModes == null && this.modes == null) {
+            if (this.modecompressListOption != null && this.modedecompressListOption == null && this.modes == null) {
                 mode = Mode.COMPRESS;
-                final List<Modecompress> result = ProcessingModesCompress.Modecompress.convertStringToModecompressList(this.compressModes);
-                modeCompressList = result;
-            } else if (this.compressModes == null && this.decompressModes != null && this.modes == null) {
+                modeCompressList = modecompressListOption;
+            } else if (this.modecompressListOption == null && this.modedecompressListOption != null && this.modes == null) {
                 mode = Mode.DECOMPRESS;
-                final List<Modedecompress> result = ProcessingModesDecompress.Modedecompress.convertStringToModedecompressList(this.decompressModes);
-                modeDecompressList = result;
-            } else if (this.compressModes == null && this.decompressModes == null && this.modes != null) {
+                modeDecompressList = modedecompressListOption;
+            } else if (this.modecompressListOption == null && this.modedecompressListOption == null && this.modes != null) {
                 mode = this.modes.mode;
                 modeCompressList = this.modes.modecompressList;
                 modeDecompressList = this.modes.modedecompressList;
@@ -183,14 +181,14 @@ public class Main implements Callable<Integer> {
                     final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
                     final List<Modecompress> defaultProcessingSteps = processingControl.modecompressList;
                     final OutputStream os = new IgnoreCloseOutputStream(System.out);
-                    processingModesCompress.xxxcompress(defaultProcessingSteps, is, os);
+                    processingModesCompress.processModecompress(defaultProcessingSteps, is, os);
                     result = 0;
                 } else if (mode == ModesExclusive.Mode.DECOMPRESS) {
                     // run Mode.decompress, List<Modedecompress>
                     final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
                     final List<Modedecompress> defaultProcessModes = processingControl.modedecompressList;
                     final OutputStream os = new IgnoreCloseOutputStream(System.out);
-                    processingModesDecompress.xxxdecompress(defaultProcessModes, is, os);
+                    processingModesDecompress.processModedecompress(defaultProcessModes, is, os);
                     result = 0;
                 } else {
                     logErrorMessage("Unknown processing-mode %s%n", this.modesExclusive);

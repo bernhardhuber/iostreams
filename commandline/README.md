@@ -5,28 +5,32 @@ Commandline for compressing, and decompressing from a file, or stdin.
 ## Usage
 
 ```
-Usage: Main [-hV] (--from-file=FROM_FILE | --stdin) (--compress=COMPRESS |
-            --decompress=DECOMPRESS | --modes=MODES) [@<filename>...]
-Run iostream tool -
+Usage: Main [-hV] (--from-file=FROM_FILE | --stdin) (--compress=COMPRESS[,
+            COMPRESS...] [--compress=COMPRESS[,COMPRESS...]]... |
+            --decompress=DECOMPRESS[,DECOMPRESS...] [--decompress=DECOMPRESS[,
+            DECOMPRESS...]]... | --modes=MODES) [@<filename>...]
+Run convert input using -
 base64-encoder, base64-decoder, mime-encoder, mime-decoder, gzip, gunzip,
 deflate, or inflate
 
-      [@<filename>...]      One or more argument files containing options.
-      --compress=COMPRESS   Compress input
-      --decompress=DECOMPRESS
-                            Decompress input
-      --from-file=FROM_FILE Read from file name
-  -h, --help                Show this help message and exit.
-      --modes=MODES         Valid values: compressB64, compressMime,
-                              compressGzip, compressDeflate, compressB64Gzip,
-                              compressMimeGzip, compressB64Deflate,
-                              compressMimeDeflate, decompressB64,
-                              decompressMime, decompressGunzip,
-                              decompressInflate, decompressB64Gunzip,
-                              decompressMimeGunzip, decompressB64Inflate,
-                              decompressMimeInflate"
-      --stdin               Read from stdin
-  -V, --version             Print version information and exit.
+      [@<filename>...]   One or more argument files containing options.
+      --compress=COMPRESS[,COMPRESS...]
+                         Valid values: "DEFLATE, GZIP, B64ENC, MIMEENC"
+      --decompress=DECOMPRESS[,DECOMPRESS...]
+                         Valid values: "INFLATE, GUNZIP, B64DEC, MIMEDEC"
+      --from-file=FROM_FILE
+                         Read from a file
+  -h, --help             Show this help message and exit.
+      --modes=MODES      Valid values: "compressB64, compressMime,
+                           compressGzip, compressDeflate, compressB64Gzip,
+                           compressMimeGzip, compressB64Deflate,
+                           compressMimeDeflate, decompressB64, decompressMime,
+                           decompressGunzip, decompressInflate,
+                           decompressB64Gunzip, decompressMimeGunzip,
+                           decompressB64Inflate, decompressMimeInflate"
+      --stdin            Read from stdin
+  -V, --version          Print version information and exit.
+
 ```
 
 Supported operations, and modes:
