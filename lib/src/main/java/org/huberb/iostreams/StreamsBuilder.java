@@ -34,7 +34,7 @@ import java.util.zip.InflaterInputStream;
 public class StreamsBuilder {
 
     /**
-     * Builds an chain of connected output streams.
+     * Builds a chain of connected output streams.
      *
      */
     public static class OutputStreamBuilder {
@@ -133,7 +133,7 @@ public class StreamsBuilder {
         private InputStream source;
 
         /**
-         * Define the inital input stream (source input stream).
+         * Define the initial input stream (source input stream).
          *
          * @param is
          * @return

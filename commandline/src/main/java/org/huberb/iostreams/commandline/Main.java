@@ -159,11 +159,22 @@ public class Main implements Callable<Integer> {
     @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
     private ModesExclusive modesExclusive;
 
+    /**
+     * Commandline entry.
+     *
+     * @param args
+     */
     public static void main(String[] args) {
         final int exitCode = new CommandLine(new Main()).execute(args);
         System.exit(exitCode);
     }
 
+    /**
+     * Picocli entry point
+     *
+     * @return
+     * @throws Exception
+     */
     @Override
     public Integer call() throws Exception {
         final int result;
