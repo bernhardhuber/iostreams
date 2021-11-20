@@ -32,10 +32,33 @@ deflate, or inflate
   -V, --version          Print version information and exit.
 
 ```
+## COMPRESS
 
-Supported operations, and modes:
+Supported COMPRESS values of option --compress:
 
-| Operation  | Mode                  | Description                       |
+| Operation  | COMPRESS | Description                       |
+|------------|--------- |-----------------------------------|
+| compress   | B64ENC   | encode input using b64 encoding   |
+| compress   | MIMEENC  | encode input using mime encoding  |
+| compress   | GZIP     | compress input using gzip         |
+| compress   | DEFLATE  | compress input using deflate      |
+
+## DECOMPRESS
+
+Supported DECOMPRESS values of option --decompress:
+
+| Operation  | DECOMPRESS | Description                       |
+|------------|------------|-----------------------------------|
+| decompress | B64DEC     | decode input using b64 decoding   |
+| decompress | MIMEDEC    | decode input using mime decoding  |
+| decompress | GUNZIP     | decode input using gunzip         |
+| decompress | INFLATE    | decode input using inflate        |
+
+## MODES
+
+Supported MODES values of option --modes:
+
+| Operation  | MODE                  | Description                       |
 |------------|-----------------------|-----------------------------------|
 | compress   | compressB65           | encode input using b64 encoding   |
 | compress   | compressMime          | encode input using mime encoding  |
