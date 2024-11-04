@@ -23,9 +23,11 @@ import java.util.Base64;
 import java.util.List;
 import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
 import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
-import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
+import org.huberb.iostreams.commandline.ProcessingModesCompress.ModeCompress;
 import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -60,7 +62,7 @@ public class ProcessingModesCompressTest {
     public void test_xxxcompress_b64enc(String s, String sB64Encoded) throws IOException {
         final Charset charset = StandardCharsets.UTF_8;
         final String m = String.format("original %s, b64encoded %s", s, sB64Encoded);
-        final List<Modecompress> modes = Arrays.asList(Modecompress.B64ENC);
+        final List<ModeCompress> modes = Arrays.asList(ModeCompress.B64ENC);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(s.getBytes(charset));
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 

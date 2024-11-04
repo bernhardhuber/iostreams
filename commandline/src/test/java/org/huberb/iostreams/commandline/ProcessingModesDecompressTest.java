@@ -23,9 +23,11 @@ import java.util.Base64;
 import java.util.List;
 import org.apache.commons.io.input.UnsynchronizedByteArrayInputStream;
 import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
-import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
+import org.huberb.iostreams.commandline.ProcessingModesDecompress.ModeDecompress;
 import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -64,7 +66,7 @@ public class ProcessingModesDecompressTest {
         final String sEncoded = Base64.getEncoder().encodeToString(sOriginal.getBytes(charset));
         assertEquals(sOriginalB64Encoded, sEncoded);
 
-        final List<Modedecompress> modes = Arrays.asList(Modedecompress.B64DEC);
+        final List<ModeDecompress> modes = Arrays.asList(ModeDecompress.B64DEC);
         try (UnsynchronizedByteArrayInputStream bais = new UnsynchronizedByteArrayInputStream(sEncoded.getBytes(charset));
                 UnsynchronizedByteArrayOutputStream baos = new UnsynchronizedByteArrayOutputStream()) {
 

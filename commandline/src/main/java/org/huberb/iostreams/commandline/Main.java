@@ -24,8 +24,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.Callable;
 import org.apache.commons.io.FileUtils;
-import org.huberb.iostreams.commandline.ProcessingModesCompress.Modecompress;
-import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
+import org.huberb.iostreams.commandline.ProcessingModesCompress.ModeCompress;
+import org.huberb.iostreams.commandline.ProcessingModesDecompress.ModeDecompress;
 import org.huberb.iostreams.commandline.support.IgnoreCloseInputStream;
 import org.huberb.iostreams.commandline.support.IgnoreCloseOutputStream;
 import picocli.CommandLine;
@@ -77,28 +77,28 @@ public class Main implements Callable<Integer> {
 
         enum Modes {
             //---
-            compressB64(Mode.COMPRESS, Arrays.asList(Modecompress.B64ENC), null),
-            compressMime(Mode.COMPRESS, Arrays.asList(Modecompress.MIMEENC), null),
-            compressGzip(Mode.COMPRESS, Arrays.asList(Modecompress.GZIP), null),
-            compressDeflate(Mode.COMPRESS, Arrays.asList(Modecompress.DEFLATE), null),
-            compressB64Gzip(Mode.COMPRESS, Arrays.asList(Modecompress.B64ENC, Modecompress.GZIP), null),
-            compressMimeGzip(Mode.COMPRESS, Arrays.asList(Modecompress.MIMEENC, Modecompress.GZIP), null),
-            compressB64Deflate(Mode.COMPRESS, Arrays.asList(Modecompress.B64ENC, Modecompress.DEFLATE), null),
-            compressMimeDeflate(Mode.COMPRESS, Arrays.asList(Modecompress.MIMEENC, Modecompress.DEFLATE), null),
+            COMPRESSB64(Mode.COMPRESS, Arrays.asList(ModeCompress.B64ENC), null),
+            COMPRESSMIME(Mode.COMPRESS, Arrays.asList(ModeCompress.MIMEENC), null),
+            COMPRESSGZIP(Mode.COMPRESS, Arrays.asList(ModeCompress.GZIP), null),
+            COMPRESSDEFLATE(Mode.COMPRESS, Arrays.asList(ModeCompress.DEFLATE), null),
+            COMPRESSB64GZIP(Mode.COMPRESS, Arrays.asList(ModeCompress.B64ENC, ModeCompress.GZIP), null),
+            COMPRESSMIMEGZIP(Mode.COMPRESS, Arrays.asList(ModeCompress.MIMEENC, ModeCompress.GZIP), null),
+            COMPRESSB64DEFLATE(Mode.COMPRESS, Arrays.asList(ModeCompress.B64ENC, ModeCompress.DEFLATE), null),
+            COMPRESSMIMEDEFLATE(Mode.COMPRESS, Arrays.asList(ModeCompress.MIMEENC, ModeCompress.DEFLATE), null),
             //---
-            decompressB64(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.B64DEC)),
-            decompressMime(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.MIMEDEC)),
-            decompressGunzip(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.GUNZIP)),
-            decompressInflate(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.INFLATE)),
-            decompressB64Gunzip(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.B64DEC, Modedecompress.GUNZIP)),
-            decompressMimeGunzip(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.MIMEDEC, Modedecompress.GUNZIP)),
-            decompressB64Inflate(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.B64DEC, Modedecompress.INFLATE)),
-            decompressMimeInflate(Mode.DECOMPRESS, null, Arrays.asList(Modedecompress.MIMEDEC, Modedecompress.INFLATE));
-            final List<Modecompress> modecompressList;
-            final List<Modedecompress> modedecompressList;
+            DECOMPRESSB64(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.B64DEC)),
+            DECOMPRESSMIME(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.MIMEDEC)),
+            DECOMPRESSGUNZIP(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.GUNZIP)),
+            DECOMPRESSINFLATE(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.INFLATE)),
+            DECOMPRESSB64GUNZIP(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.B64DEC, ModeDecompress.GUNZIP)),
+            DECOMPRESSMIMEGUNZIP(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.MIMEDEC, ModeDecompress.GUNZIP)),
+            DECOMPRESSB64INFLATE(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.B64DEC, ModeDecompress.INFLATE)),
+            DECOMPRESSMIMEINFLATE(Mode.DECOMPRESS, null, Arrays.asList(ModeDecompress.MIMEDEC, ModeDecompress.INFLATE));
+            final List<ModeCompress> modecompressList;
+            final List<ModeDecompress> modedecompressList;
             final Mode mode;
 
-            private Modes(Mode mode, List<Modecompress> modecompressList, List<Modedecompress> modedecompressList) {
+            private Modes(Mode mode, List<ModeCompress> modecompressList, List<ModeDecompress> modedecompressList) {
                 this.mode = mode;
                 this.modecompressList = modecompressList;
                 this.modedecompressList = modedecompressList;
@@ -108,12 +108,12 @@ public class Main implements Callable<Integer> {
         @CommandLine.Option(names = {"--compress"},
                 paramLabel = "COMPRESS", split = ",",
                 description = "Valid values: \"${COMPLETION-CANDIDATES}\"")
-        List<Modecompress> modecompressListOption;
+        List<ModeCompress> modecompressListOption;
 
         @CommandLine.Option(names = {"--decompress"},
                 paramLabel = "DECOMPRESS", split = ",",
                 description = "Valid values: \"${COMPLETION-CANDIDATES}\"")
-        List<Modedecompress> modedecompressListOption;
+        List<ModeDecompress> modedecompressListOption;
 
         @CommandLine.Option(names = {"--modes"},
                 paramLabel = "MODES",
@@ -123,10 +123,10 @@ public class Main implements Callable<Integer> {
         static class ProcessingControl {
 
             final Mode mode;
-            final List<Modecompress> modecompressList;
-            final List<Modedecompress> modedecompressList;
+            final List<ModeCompress> modecompressList;
+            final List<ModeDecompress> modedecompressList;
 
-            public ProcessingControl(Mode mode, List<Modecompress> modecompressList, List<Modedecompress> modedecompressList) {
+            public ProcessingControl(Mode mode, List<ModeCompress> modecompressList, List<ModeDecompress> modedecompressList) {
                 this.mode = mode;
                 this.modecompressList = modecompressList;
                 this.modedecompressList = modedecompressList;
@@ -135,8 +135,8 @@ public class Main implements Callable<Integer> {
 
         ProcessingControl build() {
             final Mode mode;
-            List<Modecompress> modeCompressList = null;
-            List<Modedecompress> modeDecompressList = null;
+            List<ModeCompress> modeCompressList = null;
+            List<ModeDecompress> modeDecompressList = null;
 
             if (this.modecompressListOption != null && this.modedecompressListOption == null && this.modes == null) {
                 mode = Mode.COMPRESS;
@@ -151,8 +151,7 @@ public class Main implements Callable<Integer> {
             } else {
                 mode = Mode.UNKNOWN;
             }
-            final ProcessingControl processingControl = new ProcessingControl(mode, modeCompressList, modeDecompressList);
-            return processingControl;
+            return new ProcessingControl(mode, modeCompressList, modeDecompressList);
         }
     }
 
@@ -190,14 +189,14 @@ public class Main implements Callable<Integer> {
                 if (mode == ModesExclusive.Mode.COMPRESS) {
                     // run Mode.compress, List<Modecompress>
                     final ProcessingModesCompress processingModesCompress = new ProcessingModesCompress();
-                    final List<Modecompress> defaultProcessingSteps = processingControl.modecompressList;
+                    final List<ModeCompress> defaultProcessingSteps = processingControl.modecompressList;
                     final OutputStream os = new IgnoreCloseOutputStream(System.out);
                     processingModesCompress.processModecompress(defaultProcessingSteps, is, os);
                     result = 0;
                 } else if (mode == ModesExclusive.Mode.DECOMPRESS) {
                     // run Mode.decompress, List<Modedecompress>
                     final ProcessingModesDecompress processingModesDecompress = new ProcessingModesDecompress();
-                    final List<Modedecompress> defaultProcessModes = processingControl.modedecompressList;
+                    final List<ModeDecompress> defaultProcessModes = processingControl.modedecompressList;
                     final OutputStream os = new IgnoreCloseOutputStream(System.out);
                     processingModesDecompress.processModedecompress(defaultProcessModes, is, os);
                     result = 0;

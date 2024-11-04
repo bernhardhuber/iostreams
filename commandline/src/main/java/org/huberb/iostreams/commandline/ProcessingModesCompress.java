@@ -34,24 +34,24 @@ class ProcessingModesCompress {
     /**
      * Define supported compress modes.
      */
-    enum Modecompress {
+    enum ModeCompress {
         DEFLATE, GZIP, B64ENC, MIMEENC;
 
         /**
          * Convert a comma separated string of mode compress modes to a list of
-         * {@link Modecompress} values.
+         * {@link ModeCompress} values.
          *
          * @param s
          * @return
          */
-        static List<Modecompress> convertStringToModecompressList(String s) {
-            final List<Modecompress> l = new ArrayList<>();
+        static List<ModeCompress> convertStringToModecompressList(String s) {
+            final List<ModeCompress> l = new ArrayList<>();
             final List<String> sSplittedList = Arrays.asList(s.split(","));
             for (String t : sSplittedList) {
                 if (t == null || t.isEmpty()) {
                     continue;
                 }
-                final Modecompress u = Modecompress.valueOf(t);
+                final ModeCompress u = ModeCompress.valueOf(t);
                 l.add(u);
             }
             return l;
@@ -66,20 +66,20 @@ class ProcessingModesCompress {
      * @param outputStreamSink
      * @throws IOException
      */
-    void processModecompress(List<Modecompress> modecompressList,
+    void processModecompress(List<ModeCompress> modecompressList,
             InputStream inputStream,
             OutputStream outputStreamSink) throws IOException {
         //---
         final StreamsBuilder.OutputStreamBuilder outputStreamBuilder = new StreamsBuilder.OutputStreamBuilder();
         outputStreamBuilder.sink(outputStreamSink);
-        for (Modecompress u : modecompressList) {
-            if (u == Modecompress.DEFLATE) {
+        for (ModeCompress u : modecompressList) {
+            if (u == ModeCompress.DEFLATE) {
                 outputStreamBuilder.deflate();
-            } else if (u == Modecompress.GZIP) {
+            } else if (u == ModeCompress.GZIP) {
                 outputStreamBuilder.gzip();
-            } else if (u == Modecompress.B64ENC) {
+            } else if (u == ModeCompress.B64ENC) {
                 outputStreamBuilder.b64Encode();
-            } else if (u == Modecompress.MIMEENC) {
+            } else if (u == ModeCompress.MIMEENC) {
                 outputStreamBuilder.mimeEncode();
             }
         }

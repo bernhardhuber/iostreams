@@ -34,24 +34,24 @@ class ProcessingModesDecompress {
     /**
      * Define supported decompress modes.
      */
-    enum Modedecompress {
+    enum ModeDecompress {
         INFLATE, GUNZIP, B64DEC, MIMEDEC;
 
         /**
          * Convert a comma separated string of mode decompress modes to a list
-         * of {@link Modedecompress} values.
+         * of {@link ModeDecompress} values.
          *
          * @param s
          * @return
          */
-        static List<Modedecompress> convertStringToModedecompressList(String s) {
-            final List<Modedecompress> l = new ArrayList<>();
+        static List<ModeDecompress> convertStringToModedecompressList(String s) {
+            final List<ModeDecompress> l = new ArrayList<>();
             final List<String> sSplittedList = Arrays.asList(s.split(","));
             for (String t : sSplittedList) {
                 if (t == null || t.isEmpty()) {
                     continue;
                 }
-                final Modedecompress u = Modedecompress.valueOf(t);
+                final ModeDecompress u = ModeDecompress.valueOf(t);
                 l.add(u);
             }
             return l;
@@ -66,20 +66,20 @@ class ProcessingModesDecompress {
      * @param outputStream
      * @throws IOException
      */
-    void processModedecompress(List<Modedecompress> modecompressList,
+    void processModedecompress(List<ModeDecompress> modecompressList,
             InputStream inputStreamSource,
             OutputStream outputStream) throws IOException {
         //---
         final StreamsBuilder.InputStreamBuilder inputStreamBuilder = new StreamsBuilder.InputStreamBuilder();
         inputStreamBuilder.source(inputStreamSource);
-        for (Modedecompress u : modecompressList) {
-            if (u == Modedecompress.INFLATE) {
+        for (ModeDecompress u : modecompressList) {
+            if (u == ModeDecompress.INFLATE) {
                 inputStreamBuilder.inflate();
-            } else if (u == Modedecompress.GUNZIP) {
+            } else if (u == ModeDecompress.GUNZIP) {
                 inputStreamBuilder.gunzip();
-            } else if (u == Modedecompress.B64DEC) {
+            } else if (u == ModeDecompress.B64DEC) {
                 inputStreamBuilder.b64Decode();
-            } else if (u == Modedecompress.MIMEDEC) {
+            } else if (u == ModeDecompress.MIMEDEC) {
                 inputStreamBuilder.mimeDecode();
             }
         }

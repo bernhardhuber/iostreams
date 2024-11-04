@@ -34,6 +34,9 @@ import org.apache.commons.io.output.UnsynchronizedByteArrayOutputStream;
  */
 public class Functions {
 
+    private Functions() {
+    }
+
     /**
      * Functions wrapper of base64, and Mime encoder, and decoder.
      */
