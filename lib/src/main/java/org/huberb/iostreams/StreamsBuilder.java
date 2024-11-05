@@ -33,6 +33,9 @@ import java.util.zip.InflaterInputStream;
  */
 public class StreamsBuilder {
 
+    private StreamsBuilder() {
+    }
+
     /**
      * Builds a chain of connected output streams.
      *
@@ -79,7 +82,7 @@ public class StreamsBuilder {
          * Add a gzipper to the chain of output streams.
          *
          * @return
-         * @see GZIPOutputStream#GZIPOutputStream(java.io.OutputStream) 
+         * @see GZIPOutputStream#GZIPOutputStream(java.io.OutputStream)
          */
         public OutputStreamBuilder gzip() {
             final Function<OutputStream, OutputStream> f = (OutputStream os) -> {
@@ -99,9 +102,7 @@ public class StreamsBuilder {
          * @return
          */
         public OutputStreamBuilder deflate() {
-            final Function<OutputStream, OutputStream> f = (OutputStream os) -> {
-                return new DeflaterOutputStream(os);
-            };
+            final Function<OutputStream, OutputStream> f = (OutputStream os) -> new DeflaterOutputStream(os);
             functionList.add(f);
             return this;
         }
@@ -173,7 +174,7 @@ public class StreamsBuilder {
          * Add a gzipper to the chain of input streams.
          *
          * @return
-         * @see GZIPInputStream#GZIPInputStream(java.io.InputStream) 
+         * @see GZIPInputStream#GZIPInputStream(java.io.InputStream)
          */
         public InputStreamBuilder gunzip() {
             final Function<InputStream, InputStream> f = (InputStream is) -> {
@@ -191,12 +192,10 @@ public class StreamsBuilder {
          * Add an inflater to the chain of input streams.
          *
          * @return
-         * @see InflaterInputStream#InflaterInputStream(java.io.InputStream) 
+         * @see InflaterInputStream#InflaterInputStream(java.io.InputStream)
          */
         public InputStreamBuilder inflate() {
-            final Function<InputStream, InputStream> f = (InputStream is) -> {
-                return new InflaterInputStream(is);
-            };
+            final Function<InputStream, InputStream> f = (InputStream is) -> new InflaterInputStream(is);
             functionList.add(f);
             return this;
         }

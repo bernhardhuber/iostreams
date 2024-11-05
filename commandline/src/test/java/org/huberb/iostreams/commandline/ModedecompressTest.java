@@ -18,9 +18,11 @@ package org.huberb.iostreams.commandline;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
-import org.huberb.iostreams.commandline.ProcessingModesDecompress.Modedecompress;
+import org.huberb.iostreams.commandline.ProcessingModesDecompress.ModeDecompress;
 import org.junit.jupiter.api.AfterEach;
+
 import static org.junit.jupiter.api.Assertions.assertEquals;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
@@ -43,19 +45,19 @@ public class ModedecompressTest {
     }
 
     /**
-     * Test method {@link Modedecompress#convertStringToModedecompressList}.
+     * Test method {@link ModeDecompress#convertStringToModedecompressList}.
      *
      * @param t
      */
     @ParameterizedTest
     @MethodSource("sampleData")
-    public void testConvertStringToModedecompress(Tuple<String, List<Modedecompress>> t) {
+    public void testConvertStringToModedecompress(Tuple<String, List<ModeDecompress>> t) {
         final String s = t.r();
-        final List<Modedecompress> l = t.s();
+        final List<ModeDecompress> l = t.s();
 
         final String m = String.format("input %s, modecompress %s", s, l);
         assertEquals(l,
-                Modedecompress.convertStringToModedecompressList(s),
+                ModeDecompress.convertStringToModedecompressList(s),
                 m);
     }
 
@@ -64,18 +66,17 @@ public class ModedecompressTest {
      * 
      * @return tuple of string representation, and parsed enum representation.
      */
-    static Stream<Tuple<String, List<Modedecompress>>> sampleData() {
+    static Stream<Tuple<String, List<ModeDecompress>>> sampleData() {
 
-        final List<Tuple<String, List<Modedecompress>>> l = Arrays.asList(
-                new Tuple<>("B64DEC", Arrays.asList(Modedecompress.B64DEC)),
-                new Tuple<>("GUNZIP", Arrays.asList(Modedecompress.GUNZIP)),
-                new Tuple<>("INFLATE", Arrays.asList(Modedecompress.INFLATE)),
-                new Tuple<>("MIMEDEC", Arrays.asList(Modedecompress.MIMEDEC)),
-                new Tuple<>("B64DEC,GUNZIP", Arrays.asList(Modedecompress.B64DEC, Modedecompress.GUNZIP)),
-                new Tuple<>("MIMEDEC,INFLATE", Arrays.asList(Modedecompress.MIMEDEC, Modedecompress.INFLATE)),
-                new Tuple<>("B64DEC,GUNZIP,INFLATE,MIMEDEC", Arrays.asList(Modedecompress.B64DEC, Modedecompress.GUNZIP, Modedecompress.INFLATE, Modedecompress.MIMEDEC))
+        final List<Tuple<String, List<ModeDecompress>>> l = Arrays.asList(new Tuple<>("B64DEC", Arrays.asList(ModeDecompress.B64DEC)),
+                new Tuple<>("GUNZIP", Arrays.asList(ModeDecompress.GUNZIP)),
+                new Tuple<>("INFLATE", Arrays.asList(ModeDecompress.INFLATE)),
+                new Tuple<>("MIMEDEC", Arrays.asList(ModeDecompress.MIMEDEC)),
+                new Tuple<>("B64DEC,GUNZIP", Arrays.asList(ModeDecompress.B64DEC, ModeDecompress.GUNZIP)),
+                new Tuple<>("MIMEDEC,INFLATE", Arrays.asList(ModeDecompress.MIMEDEC, ModeDecompress.INFLATE)),
+                new Tuple<>("B64DEC,GUNZIP,INFLATE,MIMEDEC", Arrays.asList(ModeDecompress.B64DEC, ModeDecompress.GUNZIP, ModeDecompress.INFLATE, ModeDecompress.MIMEDEC))
         );
-        final Stream<Tuple<String, List<Modedecompress>>> result = l.stream();
+        final Stream<Tuple<String, List<ModeDecompress>>> result = l.stream();
         return result;
     }
 
